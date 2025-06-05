@@ -1,8 +1,16 @@
+import model.Caixa;
+
+import java.util.Scanner;
+
 public class Main {
     public static void main(String[] args) {
 
         Scanner sc = new Scanner(System.in);
         Empresa empresa = new Empresa();
+
+        Caixa caixa = new Caixa(200000);
+
+        caixa.exibirProdutos();
 
         while(true) {
 
@@ -20,7 +28,7 @@ public class Main {
             System.out.println("11 - Exibir negócios em aberto");
             System.out.println("12 - Sair");
 
-            int opcao = Integer.parseInt(sc.nextLine);
+            int opcao = Integer.parseInt(sc.nextLine());
 
             switch (opcao) {
 

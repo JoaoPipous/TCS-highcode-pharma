@@ -1,22 +1,28 @@
 package model;
 
+import enumeracao.Categoria;
 import exception.ProdutoNaoEncontradoException;
 
 import java.time.Month;
 import java.time.Year;
+import java.util.Random;
 import java.util.ArrayList;
 
 public class Caixa {
+    static Random gerador = new Random();
     private double valorTotal;
     private ArrayList<Negocio> entradas;
     private ArrayList<Negocio> saidas;
     private ArrayList<Produto> produtos;
+    private ArrayList<Produto> produtosIniciais;
 
     public Caixa(double valorTotal) {
         this.valorTotal = valorTotal;
         this.entradas = new ArrayList<Negocio>();
         this.saidas = new ArrayList<Negocio>();
-        this.produtos = criarProdutosIniciais();
+        this.produtosIniciais = new ArrayList<Produto>();
+        criarProdutosIniciais();
+        this.produtos = produtosIniciais;
     }
 
     public double getValorTotal() {
@@ -35,13 +41,12 @@ public class Caixa {
         return produtos;
     }
 
-    //    USAR O FOR COM CONTAGEM ATÉ 10 PARA ADICIONAR 10 PRODUTOS A LISTA
-    //    PRODUTOS INSERIDOS MANUALMENTE OU UTILIZANDO O RANDOM PARA GERAR VALORES
-
     public ArrayList<Produto> criarProdutosIniciais() {
-        ArrayList<Produto> produtosIniciais = new ArrayList<>();
-        for(int i = 0; i <= 10; i++) {
-            // *** produtosIniciais.add() ***
+        String[] nomes = {"Pasta de dente", "Xarope para tosse", "Gel condicionador de cabelo", "Shampoo clear", "Allegra", "Dipirona", "Barra de proteína", "Coca-cola 600ML", "Ibuprofeno", "Ledx"};
+        for(int i = 0; i < 10; i++) {
+            double valorCompra = gerador.nextDouble(3, 20);
+            int quantidadeEstoque = gerador.nextInt(5, 300);
+            produtosIniciais.add(new Produto(nomes[i], valorCompra, valorCompra + (valorCompra * 0.15), quantidadeEstoque, Categoria.HIGIENE));
         }
         return produtosIniciais;
     }
@@ -132,5 +137,11 @@ public class Caixa {
         }
 
         return entrada - saida;
+    }
+
+    public void exibirProdutos() {
+        for(Produto p : produtos) {
+            System.out.println(p.exibirInformacoes());
+        }
     }
 }
