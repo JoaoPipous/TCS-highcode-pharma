@@ -7,16 +7,14 @@ public class Salario {
     private double bonusParticipacao;
     private double taxaAliquota;
     private double salarioBruto;
-    private final double desconto = planoOdontologico + planoSaude + bonusParticipacao + vale + (salarioBruto * taxaAliquota);
-    private final double salarioLiquido = salarioBruto + bonusParticipacao - desconto;
 
     public Salario(double vale, double planoSaude, double planoOdontologico, double bonusParticipacao, double salarioBruto) {
         this.vale = vale;
         this.planoSaude = planoSaude;
         this.planoOdontologico = planoOdontologico;
         this.bonusParticipacao = bonusParticipacao;
-        setTaxaAliquota(taxaAliquota);
         this.salarioBruto = salarioBruto;
+        setTaxaAliquota();
     }
 
     public double getVale() {
@@ -55,22 +53,27 @@ public class Salario {
         return taxaAliquota;
     }
 
-    public void setTaxaAliquota(double taxaAliquota) {
+    private void setTaxaAliquota() {
         if (salarioBruto <= 2428.80) {
             taxaAliquota = 0;
         } else if (salarioBruto > 2428.81 && salarioBruto <= 2826.65) {
-            taxaAliquota = 7.5;
+            taxaAliquota = 0.075;
         } else if (salarioBruto > 2826.66 && salarioBruto <= 3751.05) {
-            taxaAliquota = 15;
+            taxaAliquota = 0.15;
         } else if (salarioBruto > 3751.06 && salarioBruto <= 4664.68) {
-            taxaAliquota = 22.5;
+            taxaAliquota = 0.225;
         } else {
-            taxaAliquota = 27.5;
+            taxaAliquota = 0.275;
         }
     }
 
-    public void calcularSalario(){
-        Funcionario.setSalario(salarioLiquido);
+    public void calcularSalario(Funcionario funcionario){
+        double desconto = planoOdontologico + planoSaude + bonusParticipacao + vale + (salarioBruto * taxaAliquota);
+        double salarioLiquido = salarioBruto + bonusParticipacao - desconto;
+
+        funcionario.setSalario(salarioLiquido);
+
+        System.out.println("O salário líquido do funcionario é R$" + salarioLiquido);
     }
 
 }
