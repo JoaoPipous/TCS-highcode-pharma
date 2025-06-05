@@ -17,42 +17,6 @@ public class Salario {
         setTaxaAliquota();
     }
 
-    public double getVale() {
-        return vale;
-    }
-
-    public void setVale(double vale) {
-        this.vale = vale;
-    }
-
-    public double getPlanoSaude() {
-        return planoSaude;
-    }
-
-    public void setPlanoSaude(double planoSaude) {
-        this.planoSaude = planoSaude;
-    }
-
-    public double getPlanoOdontologico() {
-        return planoOdontologico;
-    }
-
-    public void setPlanoOdontologico(double planoOdontologico) {
-        this.planoOdontologico = planoOdontologico;
-    }
-
-    public double getBonusParticipacao() {
-        return bonusParticipacao;
-    }
-
-    public void setBonusParticipacao(double bonusParticipacao) {
-        this.bonusParticipacao = bonusParticipacao;
-    }
-
-    public double getTaxaAliquota() {
-        return taxaAliquota;
-    }
-
     private void setTaxaAliquota() {
         if (salarioBruto <= 2428.80) {
             taxaAliquota = 0;
@@ -76,4 +40,14 @@ public class Salario {
         System.out.println("O salário líquido do funcionario é R$" + salarioLiquido);
     }
 
+    @Override
+    public String toString() {
+        return "**Informações salariais**" + "\n" +
+                "Vale Refeição/Alimentação: R$" + vale + "\n" +
+                "Plano de saúde: R$" + planoSaude + "\n" +
+                "Plano Odontológico: R$" + planoOdontologico + "\n" +
+                "Bonus de participação: R$" + bonusParticipacao + "\n" +
+                "Aliquota aplicada: " + taxaAliquota + "%" + "\n" +
+                "Salario Bruto: R$" + salarioBruto;
+    }
 }
