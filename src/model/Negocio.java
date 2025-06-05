@@ -12,7 +12,7 @@ public class Negocio {
     private double valorNegocio;
     private Status status;
     private ArrayList<Funcionario> funcionariosEnvolvidos;
-    private Produto produto;
+    private model.Produto produto;
     private LocalDateTime dataProgramada;
 
     public Negocio(double valorNegocio, Status status, ArrayList<Funcionario> funcionariosEnvolvidos, Produto produto) {
