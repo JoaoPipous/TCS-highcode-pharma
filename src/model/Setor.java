@@ -4,8 +4,9 @@ public class Setor {
     private static int qtdFuncionariosTotal = 0;
     private String nome;
     private int qtdFuncionarios;
+    private int qtdLimite;
 
-    public Setor(String nome) {
+    public Setor(String nome, int qtdFuncionarios) {
         this.nome = nome;
         this.qtdFuncionarios = 0;
     }
@@ -21,5 +22,13 @@ public class Setor {
 
     public static int getQtdFuncionariosTotais() {
         return qtdFuncionariosTotal;
+    }
+
+    public int getQtdLimite() {
+        return qtdLimite;
+    }
+
+    public void setQtdLimite(int qtdLimite) {
+        this.qtdLimite = qtdLimite;
     }
 }
