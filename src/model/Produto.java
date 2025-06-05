@@ -1,5 +1,7 @@
 package model;
 
+import enumeracao.Categoria;
+
 public class Produto {
     private String nome;
     private double valorCompra;
