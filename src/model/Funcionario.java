@@ -79,14 +79,13 @@ public class Funcionario {
     public String toString() {
         return "Funcionario{" +
                 "nome='" + nome + '\'' +
-                ", sobrenome='" + sobrenome '\'' +
+                ", sobrenome='" + sobrenome + '\'' +
                 ", codigoFuncionario='" + codigoFuncionario + '\'' +
                 ", idade=" + idade +
                 ", genero=" + genero +
                 ", salario=" + salario +
                 ", setor=" + setor +
-                ", qtdVendar=" + qtdVendas +
+                ", qtdVendas=" + qtdVendas +
                 '}';
     }
-
 }

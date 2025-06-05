@@ -1,5 +1,3 @@
-import model.Caixa;
-
 import java.util.Scanner;
 
 public class Main {
@@ -8,9 +6,7 @@ public class Main {
         Scanner sc = new Scanner(System.in);
         Empresa empresa = new Empresa();
 
-        Caixa caixa = new Caixa(200000);
-
-        caixa.exibirProdutos();
+        empresa.getCaixa().exibirProdutos();
 
         while(true) {
 
