@@ -1,6 +1,7 @@
 package model;
 
 import enumeracao.Genero;
+import setor.Setor;
 
 public class Funcionario {
     private String nome;
