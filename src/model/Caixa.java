@@ -67,7 +67,6 @@ public class Caixa {
 
     public void registrarCompra(Negocio compra) {
         saidas.add(compra);
-        // *** AUMENTAR ESTOQUE ***
     }
 
     public void registrarVenda(Negocio venda) {
@@ -103,6 +102,7 @@ public class Caixa {
         double saida = 0, entrada = 0;
 
         for(Negocio c : saidas) {
+            // Verificar se a entrega está com status aberto
             Month mesProgramado = c.getDataProgramada().getMonth();
             if(mesProgramado.equals(mes)) {
                 saida += c.getValorNegocio();
@@ -110,6 +110,7 @@ public class Caixa {
         }
 
         for(Negocio v : entradas) {
+            // Verificar se a entrega está com status aberto
             Month mesProgramado = v.getDataProgramada().getMonth();
             if(mesProgramado.equals(mes)) {
                 entrada += v.getValorNegocio();
@@ -123,6 +124,7 @@ public class Caixa {
         double saida = 0, entrada = 0;
 
         for(Negocio c : saidas) {
+            // Verificar se a entrega está com status aberto
             Year anoProgramado = Year.of(c.getDataProgramada().getYear());
             if(anoProgramado.equals(ano)) {
                 saida += c.getValorNegocio();
@@ -130,6 +132,7 @@ public class Caixa {
         }
 
         for(Negocio v : entradas) {
+            // Verificar se a entrega está com status aberto
             Year anoProgramado = Year.of(v.getDataProgramada().getYear());
             if(anoProgramado.equals(ano)) {
                 entrada += v.getValorNegocio();

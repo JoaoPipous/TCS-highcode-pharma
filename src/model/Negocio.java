@@ -1,6 +1,7 @@
 package model;
 
 import enumeracao.Status;
+import enumeracao.TipoNegocio;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -12,22 +13,25 @@ public class Negocio {
     private double valorNegocio;
     private Status status;
     private ArrayList<Funcionario> funcionariosEnvolvidos;
-    private model.Produto produto;
+    private ArrayList<ItemNegocio> produtos;
     private LocalDateTime dataProgramada;
+    private TipoNegocio tipo;
 
-    public Negocio(double valorNegocio, Status status, ArrayList<Funcionario> funcionariosEnvolvidos, Produto produto) {
-        this.valorNegocio = valorNegocio;
+    public Negocio(Status status, ArrayList<Funcionario> funcionariosEnvolvidos, ArrayList<ItemNegocio> itens, TipoNegocio tipo) {
+        this.valorNegocio = calcularValorTotal();
         this.status = status;
         this.funcionariosEnvolvidos = funcionariosEnvolvidos;
-        this.produto = produto;
+        this.produtos = itens;
+        this.tipo = tipo;
     }
 
-    public Negocio(double valorNegocio, Status status, ArrayList<Funcionario> funcionariosEnvolvidos, Produto produto, LocalDateTime dataProgramada) {
-        this.valorNegocio = valorNegocio;
+    public Negocio(Status status, ArrayList<Funcionario> funcionariosEnvolvidos, ArrayList<ItemNegocio> itens, LocalDateTime dataProgramada, TipoNegocio tipo) {
+        this.valorNegocio = calcularValorTotal();
         this.status = status;
         this.funcionariosEnvolvidos = funcionariosEnvolvidos;
-        this.produto = produto;
+        this.produtos = itens;
         this.dataProgramada = dataProgramada;
+        this.tipo = tipo;
     }
 
     public String getDataNegocioFormatada() {
@@ -54,8 +58,8 @@ public class Negocio {
         return funcionariosEnvolvidos;
     }
 
-    public Produto getProduto() {
-        return produto;
+    public ArrayList<ItemNegocio> getProduto() {
+        return produtos;
     }
 
     public LocalDateTime getDataProgramada() {
@@ -70,6 +74,20 @@ public class Negocio {
         }
 
         return funcionarios;
+    }
+
+    public double calcularValorTotal() {
+        double soma = 0;
+        if(tipo.equals(TipoNegocio.VENDA)) {
+            for(ItemNegocio item : produtos) {
+                soma += item.getProduto().getValorVenda();
+            }
+        } else {
+            for(ItemNegocio item : produtos) {
+                soma += item.getProduto().getValorCompra();
+            }
+        }
+        return soma;
     }
 
     public String exibirDados() {
