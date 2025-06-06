@@ -7,8 +7,8 @@ public class AtendimentoCliente extends Setor {
     private int contador = 1;
 
 
-    public AtendimentoCliente(String nome, int qtdFuncionarios) throws QuantidadeLimiteFuncionariosException {
-        super(nome,qtdFuncionarios);
+    public AtendimentoCliente(String nome) throws QuantidadeLimiteFuncionariosException {
+        super(nome);
         setQtdLimite(4);
 
         if(contador > getQtdLimite()){

@@ -6,7 +6,7 @@ public class Setor {
     private int qtdFuncionarios;
     private int qtdLimite;
 
-    public Setor(String nome, int qtdFuncionarios) {
+    public Setor(String nome) {
         this.nome = nome;
         this.qtdFuncionarios = 0;
     }
