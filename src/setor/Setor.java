@@ -3,12 +3,11 @@ package setor;
 public class Setor {
     private static int qtdFuncionariosTotal = 0;
     private String nome;
-    private int qtdFuncionarios;
+    private int qtdFuncionarios = 0;
     private int qtdLimite;
 
     public Setor(String nome) {
         this.nome = nome;
-        this.qtdFuncionarios = 0;
     }
 
     public void addQtdFuncionario() {
@@ -30,5 +29,10 @@ public class Setor {
 
     public void setQtdLimite(int qtdLimite) {
         this.qtdLimite = qtdLimite;
+    }
+
+    public String exibirSetor() {
+        return "\nNome do setor: " + nome + "\n" +
+                "Quantidade de funcionários:" + qtdFuncionarios + "\n";
     }
 }

@@ -12,4 +12,8 @@ public class ItemNegocio {
     public Produto getProduto() {
         return produto;
     }
+
+    public int getQtd() {
+        return qtd;
+    }
 }

@@ -62,4 +62,13 @@ public class Almoxarifado extends Setor {
     public void addProduto(Produto produto) {
         produtos.add(produto);
     }
+
+    public void verificarProduto(Produto produto) throws ProdutoNaoEncontradoException{
+        for(Produto p : produtos) {
+            if(p.equals(produto)) {
+                return;
+            }
+        }
+        throw new ProdutoNaoEncontradoException("Produto não encontrado no estoque.");
+    }
 }

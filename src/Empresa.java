@@ -1,8 +1,14 @@
+import enumeracao.Status;
+import enumeracao.TipoNegocio;
 import exception.QuantidadeLimiteFuncionariosException;
 import model.Caixa;
+import model.Funcionario;
+import model.ItemNegocio;
+import model.Negocio;
 import setor.Almoxarifado;
 import setor.Setor;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public class Empresa {
@@ -32,9 +38,21 @@ public class Empresa {
         return setores;
     }
 
-    public void adicionarVenda() {}
-
     public void criarSetor(String nome) {
         setores.add(new Setor(nome));
+    }
+
+    public void registrarCompra(Negocio compra) {
+        caixa.registrarCompra(compra);
+        for(ItemNegocio item : compra.getProdutos()) {
+            item.getProduto().addEstoque(item.getQtd());
+        }
+    }
+
+    public void registrarVenda(Negocio venda) {
+        caixa.registrarVenda(venda);
+        for(ItemNegocio item : venda.getProdutos()) {
+            item.getProduto().removeEstoque(item.getQtd());
+        }
     }
 }
