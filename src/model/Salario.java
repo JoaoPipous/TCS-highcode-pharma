@@ -1,5 +1,7 @@
 package model;
 
+import setor.Setor;
+
 public class Salario {
     private double vale;
     private double planoSaude;
@@ -8,49 +10,36 @@ public class Salario {
     private double taxaAliquota;
     private double salarioBruto;
 
-    public Salario(double vale, double planoSaude, double planoOdontologico, double bonusParticipacao, double salarioBruto) {
+    public Salario(double vale, double bonusParticipacao, double salarioBruto, Funcionario funcionario) {
         this.vale = vale;
-        this.planoSaude = planoSaude;
-        this.planoOdontologico = planoOdontologico;
+        setPlanoSaude(funcionario);
+        this.planoOdontologico = 3000;
         this.bonusParticipacao = bonusParticipacao;
         this.salarioBruto = salarioBruto;
         setTaxaAliquota();
     }
 
-    public double getVale() {
-        return vale;
-    }
+    private void setPlanoSaude(Funcionario funcionario) {
+        Setor setor = funcionario.getSetor();
 
-    public void setVale(double vale) {
-        this.vale = vale;
-    }
+        if (setor == null || setor.getNome() == null) {
+            planoSaude = 0;
+            return;
+        }
 
-    public double getPlanoSaude() {
-        return planoSaude;
-    }
+        String nomeSetor = setor.getNome();
 
-    public void setPlanoSaude(double planoSaude) {
-        this.planoSaude = planoSaude;
-    }
-
-    public double getPlanoOdontologico() {
-        return planoOdontologico;
-    }
-
-    public void setPlanoOdontologico(double planoOdontologico) {
-        this.planoOdontologico = planoOdontologico;
-    }
-
-    public double getBonusParticipacao() {
-        return bonusParticipacao;
-    }
-
-    public void setBonusParticipacao(double bonusParticipacao) {
-        this.bonusParticipacao = bonusParticipacao;
-    }
-
-    public double getTaxaAliquota() {
-        return taxaAliquota;
+        if (nomeSetor.equalsIgnoreCase("Vendas") || nomeSetor.equalsIgnoreCase("Atendimento ao Cliente")) {
+            planoSaude = 3000;
+        } else if (nomeSetor.equalsIgnoreCase("Almoxarifado")) {
+            planoSaude = 3500;
+        } else if (nomeSetor.equalsIgnoreCase("Financeiro")) {
+            planoSaude = 3750;
+        } else if (nomeSetor.equalsIgnoreCase("GestaoPessoas")) {
+            planoSaude = 4200;
+        } else if (nomeSetor.equalsIgnoreCase("GerenteFilial")) {
+            planoSaude = 5000;
+        }
     }
 
     private void setTaxaAliquota() {
@@ -67,13 +56,24 @@ public class Salario {
         }
     }
 
-    public void calcularSalario(Funcionario funcionario){
-        double desconto = planoOdontologico + planoSaude + bonusParticipacao + vale + (salarioBruto * taxaAliquota);
+    public void calcularSalario(model.Funcionario funcionario) {
+        double desconto =  vale + (salarioBruto * taxaAliquota);
+
         double salarioLiquido = salarioBruto + bonusParticipacao - desconto;
 
         funcionario.setSalario(salarioLiquido);
 
-        System.out.println("O salário líquido do funcionario é R$" + salarioLiquido);
+        System.out.println("O salário líquido do funcionario é R$" + salarioLiquido + "\n");
     }
 
+    @Override
+    public String toString() {
+        return "**Informações salariais**" + "\n" +
+                "Vale Refeição/Alimentação: R$" + vale + "\n" +
+                "Cobertura do plano de saúde: R$" + planoSaude + "\n" +
+                "Cobertura do plano Odontológico: R$" + planoOdontologico + "\n" +
+                "Bonus de participação: R$" + bonusParticipacao + "\n" +
+                "Aliquota aplicada: " + (taxaAliquota * 100) + "%" + "\n" +
+                "Salario Bruto: R$" + salarioBruto;
+    }
 }
