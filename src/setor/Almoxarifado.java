@@ -44,7 +44,7 @@ public class Almoxarifado extends Setor {
                 return "Produto " + "*** produto.getNome() ***" + "removido com sucesso!";
             }
         }
-        throw new ProdutoNaoEncontradoException("Produto " + " *** produto.getNome() ***" + " não encontrado.");
+        throw new ProdutoNaoEncontradoException("Produto " + produto.getNome() + " não encontrado.");
     }
 
     // Percorre a lista de produtos exibindo cada produto

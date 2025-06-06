@@ -8,6 +8,10 @@ import model.Produto;
 import setor.Setor;
 
 import java.security.spec.RSAOtherPrimeInfo;
+import java.time.LocalDateTime;
+import java.time.Month;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Scanner;
 import java.util.ArrayList;
 
@@ -15,6 +19,7 @@ public class Main {
     static TipoNegocio tipoNegocio;
     static Status status;
     static Negocio negocio;
+    static DateTimeFormatter formatador = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         Empresa empresa = new Empresa();
@@ -33,7 +38,7 @@ public class Main {
 
         while (true) {
 
-            // *** Vendas e compras adicionadas quando tipo = FINALIZADO
+            // *** Vendas e compras adicionadas quando Status = FINALIZADO
             // Caso a venda esteja programada ainda falta implementar datas ***
 
             System.out.println("\nEscolha uma opção:");
@@ -63,6 +68,7 @@ public class Main {
                 case 3:
                     ArrayList<ItemNegocio> produtosCompra = new ArrayList<>();
                     tipoNegocio = TipoNegocio.COMPRA;
+                    LocalDateTime dataHoraLida;
 
                     System.out.println("\nQual o status da compra?");
                     System.out.println("1 - Em aberto");
@@ -71,6 +77,19 @@ public class Main {
                     opcao = Integer.parseInt(sc.nextLine());
 
                     status = (opcao == 1 ? Status.ABERTO : Status.FINALIZADO);
+
+                    while(true) {
+                        if(status.equals(Status.ABERTO)) {
+                            System.out.println("\nInsira a data de finalização da compra, formato: dd/MM/yyyy hh:mm:ss");
+                            try {
+                                String data = sc.nextLine();
+                                dataHoraLida = LocalDateTime.parse(data, formatador);
+                                break;
+                            } catch (DateTimeParseException e) {
+                                System.out.println("\n❌ Erro: O formato digitado está incorreto. Por favor, use o formato dd/MM/yyyy HH:mm.");
+                            }
+                        }
+                    }
 
                     while (true) {
                         System.out.println("\nEscolha o produto que deseja comprar: ");
@@ -100,7 +119,12 @@ public class Main {
                         }
                     }
 
-                    negocio = new Negocio(status, produtosCompra, TipoNegocio.COMPRA);
+                    if(status.equals(Status.FINALIZADO)) {
+                        negocio = new Negocio(status, produtosCompra, TipoNegocio.COMPRA);
+                    } else {
+                        negocio = new Negocio(status, produtosCompra, dataHoraLida, TipoNegocio.COMPRA);
+                    }
+
                     empresa.registrarCompra(negocio);
                     break;
 

@@ -33,10 +33,11 @@ public class Negocio {
         this.valorNegocio = calcularValorTotal();
     }
 
-    public Negocio(Status status, ArrayList<Funcionario> funcionariosEnvolvidos, ArrayList<ItemNegocio> itens, LocalDateTime dataProgramada, TipoNegocio tipo) {
+    // LISTA DE FUNCIONARIOS REMOVIDA, ADICIONAR NOVAMENTE DEPOIS
+    public Negocio(Status status, ArrayList<ItemNegocio> itens, LocalDateTime dataProgramada, TipoNegocio tipo) {
         this.valorNegocio = calcularValorTotal();
         this.status = status;
-        this.funcionariosEnvolvidos = funcionariosEnvolvidos;
+        // this.funcionariosEnvolvidos = funcionariosEnvolvidos;
         this.produtos = itens;
         this.dataProgramada = dataProgramada;
         this.tipo = tipo;
