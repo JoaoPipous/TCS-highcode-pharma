@@ -2,11 +2,20 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
+        String[] nomesSetores = {"Almoxarifado", "Atendimento ao cliente", "Financeiro", "Gerente da filial", "Gestão de pessoas", "Vendas"};
 
         Scanner sc = new Scanner(System.in);
         Empresa empresa = new Empresa();
 
-        empresa.getCaixa().exibirProdutos();
+        // *** TESTES ***
+        empresa.getAlmoxarifado().criarProdutosIniciais();
+        empresa.getAlmoxarifado().exibirProdutos();
+
+        for(int i = 0; i < nomesSetores.length; i++) {
+            empresa.criarSetor(nomesSetores[i]);
+        }
+
+        // *** TESTES ***
 
         while(true) {
 

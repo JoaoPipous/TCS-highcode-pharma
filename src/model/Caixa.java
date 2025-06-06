@@ -9,20 +9,14 @@ import java.util.Random;
 import java.util.ArrayList;
 
 public class Caixa {
-    static Random gerador = new Random();
     private double valorTotal;
     private ArrayList<Negocio> entradas;
     private ArrayList<Negocio> saidas;
-    private ArrayList<Produto> produtos;
-    private ArrayList<Produto> produtosIniciais;
 
     public Caixa(double valorTotal) {
         this.valorTotal = valorTotal;
         this.entradas = new ArrayList<Negocio>();
         this.saidas = new ArrayList<Negocio>();
-        this.produtosIniciais = new ArrayList<Produto>();
-        criarProdutosIniciais();
-        this.produtos = produtosIniciais;
     }
 
     public double getValorTotal() {
@@ -35,34 +29,6 @@ public class Caixa {
 
     public ArrayList<Negocio> getSaidas() {
         return saidas;
-    }
-
-    public ArrayList<Produto> getProdutos() {
-        return produtos;
-    }
-
-    public ArrayList<Produto> criarProdutosIniciais() {
-        String[] nomes = {"Pasta de dente", "Xarope para tosse", "Gel condicionador de cabelo", "Shampoo clear", "Allegra", "Dipirona", "Barra de proteína", "Coca-cola 600ML", "Ibuprofeno", "Ledx"};
-        for(int i = 0; i < 10; i++) {
-            double valorCompra = gerador.nextDouble(3, 20);
-            int quantidadeEstoque = gerador.nextInt(5, 300);
-            produtosIniciais.add(new Produto(nomes[i], valorCompra, valorCompra + (valorCompra * 0.15), quantidadeEstoque, Categoria.HIGIENE));
-        }
-        return produtosIniciais;
-    }
-
-    public void addProduto(Produto produto) {
-        produtos.add(produto);
-    }
-
-    public String removerProduto(Produto produto) throws ProdutoNaoEncontradoException {
-        for(Produto p : produtos) {
-            if(p.equals(produto)) {
-                produtos.remove(p);
-                return "Produto " + "*** produto.getNome() ***" + "removido com sucesso!";
-            }
-        }
-        throw new ProdutoNaoEncontradoException("Produto " + " *** produto.getNome() ***" + " não encontrado.");
     }
 
     public void registrarCompra(Negocio compra) {
@@ -98,6 +64,10 @@ public class Caixa {
         return comprasString;
     }
 
+    // Inicia 2 variáveis, saída (compra de produtos) e entrada (venda de produtos)
+    // Percorre a lista de saídas, se a saída atual estiver programada e
+    // for do mesmo mês passado por parâmetro, soma a saida o mesmo é feito para as entradas
+    // No final, retorna a diferença entre entradas e saídas = (lucro mensal)
     public double estimarLucroMensal(Month mes) {
         double saida = 0, entrada = 0;
 
@@ -120,6 +90,10 @@ public class Caixa {
         return entrada - saida;
     }
 
+    // Inicia 2 variáveis, saída (compra de produtos) e entrada (venda de produtos)
+    // Percorre a lista de saídas, se a saída atual estiver programada e
+    // for do mesmo ano passado por parâmetro, soma a saida o mesmo é feito para as entradas
+    // No final, retorna a diferença entre entradas e saídas = (lucro anual)
     public double estimarLucroAnual(Year ano) {
         double saida = 0, entrada = 0;
 
@@ -140,11 +114,5 @@ public class Caixa {
         }
 
         return entrada - saida;
-    }
-
-    public void exibirProdutos() {
-        for(Produto p : produtos) {
-            System.out.println(p.exibirInformacoes());
-        }
     }
 }
