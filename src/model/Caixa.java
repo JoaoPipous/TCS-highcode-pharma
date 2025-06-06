@@ -33,11 +33,12 @@ public class Caixa {
 
     public void registrarCompra(Negocio compra) {
         saidas.add(compra);
+        valorTotal -= compra.getValorNegocio();
     }
 
     public void registrarVenda(Negocio venda) {
         saidas.add(venda);
-        // *** DIMINUIR ESTOQUE ***
+        valorTotal += venda.getValorNegocio();
     }
 
     public ArrayList<String> exibirVendas() {
