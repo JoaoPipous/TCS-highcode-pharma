@@ -1,6 +1,8 @@
 package model;
 
 import enumeracao.Genero;
+import exception.GeneroInvalidoException;
+import exception.SetorInvalidoException;
 import setor.Setor;
 
 public class Funcionario {
@@ -13,14 +15,42 @@ public class Funcionario {
     private Setor setor;
     private int qtdVendas;
 
-    public Funcionario(String nome, String sobrenome, String codigoFuncionario, int idade, Genero genero, Setor setor) {
+    public Funcionario(String nome, String sobrenome, String codigoFuncionario, int idade, int genero, int setor) throws GeneroInvalidoException, SetorInvalidoException {
         this.nome = nome;
         this.sobrenome = sobrenome;
         this.codigoFuncionario = codigoFuncionario;
         this.idade = idade;
-        this.genero = genero;
-        this.setor = setor;
-        this.qtdVendas = qtdVendas;
+
+        if(definirGenero(genero) == null) {
+            throw new exception.GeneroInvalidoException("Entrada inválida: gênero não encontrado.");
+        } else {
+            this.genero = definirGenero(genero);
+        }
+
+        if(definirSetor(setor) == null) {
+            throw new exception.SetorInvalidoException("Entrada inválida: setor não encontrado.");
+        } else {
+            this.setor = definirSetor(setor);
+        }
+
+        this.qtdVendas = 0;
+    }
+
+    public Genero definirGenero(int genero) {
+        switch (genero) {
+            case 1: return Genero.MASCULINO;
+            case 2: return Genero.FEMININO;
+        }
+
+        return null;
+    }
+
+    public Setor definirSetor(int setor) {
+        switch (setor) {
+
+        }
+
+        return null;
     }
 
     public String getNome() {

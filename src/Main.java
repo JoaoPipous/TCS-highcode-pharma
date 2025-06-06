@@ -1,21 +1,16 @@
+import exception.CategoriaInvalidaException;
+import model.Produto;
+
+import java.time.Year;
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        String[] nomesSetores = {"Almoxarifado", "Atendimento ao cliente", "Financeiro", "Gerente da filial", "Gestão de pessoas", "Vendas"};
 
         Scanner sc = new Scanner(System.in);
         Empresa empresa = new Empresa();
 
-        // *** TESTES ***
-        empresa.getAlmoxarifado().criarProdutosIniciais();
-        empresa.getAlmoxarifado().exibirProdutos();
-
-        for(int i = 0; i < nomesSetores.length; i++) {
-            empresa.criarSetor(nomesSetores[i]);
-        }
-
-        // *** TESTES ***
+        empresa.getCaixa().exibirProdutos();
 
         while(true) {
 
@@ -38,10 +33,36 @@ public class Main {
             switch (opcao) {
 
                 case 1: {
+
+
+
                     break;
                 }
 
                 case 2: {
+
+                    System.out.println("Digite o nome do produto:");
+                    String nomeProduto = sc.nextLine();
+
+                    System.out.println("Digite o valor de compra do produto:");
+                    double valorCompra = Double.parseDouble(sc.nextLine());
+
+                    System.out.println("Digite o valor de venda do produto:");
+                    double valorVenda = Double.parseDouble(sc.nextLine());
+
+                    System.out.println("Digite a quantidade em estoque atual do produto:");
+                    int qtdEstoque = Integer.parseInt(sc.nextLine());
+
+                    System.out.println("Escolha a categoria do produto:");
+                    System.out.println("1- Medicamento  2- Higiene  3- Cosmético  4- Alimentício");
+                    int categoria = Integer.parseInt(sc.nextLine());
+
+                    try {
+                        Produto produto = new Produto(nomeProduto, valorCompra, valorVenda, qtdEstoque, categoria);
+                    } catch(CategoriaInvalidaException e) {
+                        System.out.println(e.getMessage());
+                    }
+
                     break;
                 }
 
@@ -58,26 +79,49 @@ public class Main {
                 }
 
                 case 6: {
+
+                    System.out.println("Lista de produtos:\n");
+                    empresa.getCaixa().exibirProdutos();
                     break;
                 }
 
                 case 7: {
+
+                    System.out.println("Lista de compras:\n");
+                    empresa.getCaixa().exibirCompras();
                     break;
                 }
 
                 case 8: {
+
+                    System.out.println("Lista de vendas:\n");
+                    empresa.getCaixa().exibirVendas();
                     break;
                 }
 
                 case 9: {
+
+                    System.out.println("Transportadoras:\n");
+                    empresa.getTransportadoras().exibirTransportadora();
                     break;
                 }
 
                 case 10: {
+
+                    System.out.println("Para verificar a estimativa mensal, digite o número referente ao mês desejado: (1 a 12)");
+                    int mensal = Integer.parseInt(sc.nextLine());
+
+                    System.out.println("Para verificar a estimativa anual, digite o ano desejado:");
+                    int anual = Integer.parseInt(sc.nextLine());
+
+                    System.out.printf("Valor total do caixa: R$%.2f\nEstimativa mensal: R$%.2f\nEstimativa anual: R$%.2f\n", empresa.getCaixa().getValorTotal(), empresa.getCaixa().estimarLucroMensal(mensal), empresa.getCaixa().estimarLucroAnual(anual));
                     break;
                 }
 
                 case 11: {
+
+                    System.out.println("Negócios em aberto:\n");
+                    empresa.getCaixa().exibirNegociosAbertos();
                     break;
                 }
 

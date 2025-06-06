@@ -1,40 +1,24 @@
-import exception.QuantidadeLimiteFuncionariosException;
 import model.Caixa;
-import setor.Almoxarifado;
-import setor.Setor;
-
-import java.util.ArrayList;
+import model.Transportadora;
 
 public class Empresa {
     private Caixa caixa;
-    private Almoxarifado almoxarifado;
-    private ArrayList<Setor> setores;
+    private Transportadora transportadoras;
 
     public Empresa(){
         this.caixa = new Caixa(200000);
-        try {
-            this.almoxarifado = new Almoxarifado("Almoxarifado");
-        } catch(QuantidadeLimiteFuncionariosException e) {
-            e.printStackTrace();
-        }
-        setores = new ArrayList<>();
+        this.transportadoras = new Transportadora();
+    }
+
+    public String exibirSetores() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("1- Gerente de Filial  2- Atendimento ao Cliente  3- Gestão de Pessoas  4- Financeiro  5- Vendas  6- Almoxarifado\n");
+        return sb.toString();
     }
 
     public Caixa getCaixa() {
         return caixa;
     }
 
-    public Almoxarifado getAlmoxarifado() {
-        return almoxarifado;
-    }
-
-    public ArrayList<Setor> getSetores() {
-        return setores;
-    }
-
-    public void adicionarVenda() {}
-
-    public void criarSetor(String nome) {
-        setores.add(new Setor(nome));
-    }
+    public Transportadora getTransportadoras() { return transportadoras; }
 }
