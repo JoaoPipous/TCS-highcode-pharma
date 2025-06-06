@@ -4,17 +4,15 @@ import exception.QuantidadeLimiteFuncionariosException;
 
 public class Almoxarifado extends Setor {
 
-    private int contador = 1;
+    public Almoxarifado() throws QuantidadeLimiteFuncionariosException {
+        super();
+        super.setNome("Almoxarifado");
+        super.setQtdFuncionarios(3);
 
-
-    public Almoxarifado(String nome, int qtdFuncionarios) throws QuantidadeLimiteFuncionariosException {
-        super(nome, qtdFuncionarios);
-        setQtdLimite(3);
-
-        if(contador > getQtdLimite()){
-            throw new QuantidadeLimiteFuncionariosException("Quantidade excedeu limite de funcionários.");
+        if(getContador() > getQtdFuncionarios()){
+            throw new QuantidadeLimiteFuncionariosException("Quantidade excedeu o limite de funcionários.");
         }
 
-        contador++;
+        setContador(getContador() + 1);
     }
 }

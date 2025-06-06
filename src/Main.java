@@ -1,4 +1,5 @@
-import exception.CategoriaInvalidaException;
+import exception.*;
+import model.Funcionario;
 import model.Produto;
 
 import java.time.Year;
@@ -34,7 +35,37 @@ public class Main {
 
                 case 1: {
 
+                    try {
+                        System.out.println("Digite o nome do funcionário:");
+                        String nomeFuncionario = sc.nextLine();
 
+                        System.out.println("Digite o sobrenome do funcionário:");
+                        String sobrenomeFuncionario = sc.nextLine();
+
+                        System.out.println("Digite o código único do funcionário:");
+                        String codigoFuncionario = sc.nextLine();
+
+                        System.out.println("Digite a idade do funcionário:");
+                        int idadeFuncionario = Integer.parseInt(sc.nextLine());
+
+                        System.out.println(empresa.exibirGeneros());
+                        System.out.println("Digite o número do gênero correspondente do funcionário:");
+                        int numGenero = Integer.parseInt(sc.nextLine());
+
+                        System.out.println(empresa.exibirSetores());
+                        System.out.println("Digite o número do setor correspondente do funcionário:");
+                        int numSetor = Integer.parseInt(sc.nextLine());
+
+                        Funcionario funcionario = new Funcionario(nomeFuncionario, sobrenomeFuncionario, codigoFuncionario, idadeFuncionario, numGenero, numSetor);
+                        empresa.addFuncionario(funcionario);
+                        System.out.println("Funcionário adicionado com sucesso!");
+                    } catch (GeneroInvalidoException e) {
+                        System.out.println(e.getMessage());
+                    } catch (SetorInvalidoException e) {
+                        System.out.println(e.getMessage());
+                    } catch (QuantidadeLimiteFuncionariosException e) {
+                        System.out.println(e.getMessage());
+                    }
 
                     break;
                 }

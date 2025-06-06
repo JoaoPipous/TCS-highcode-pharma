@@ -1,13 +1,28 @@
 import model.Caixa;
+import model.Funcionario;
 import model.Transportadora;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Empresa {
     private Caixa caixa;
     private Transportadora transportadoras;
+    private List<Funcionario> funcionarios = new ArrayList<Funcionario>();
 
-    public Empresa(){
+    public Empresa() {
         this.caixa = new Caixa(200000);
         this.transportadoras = new Transportadora();
+    }
+
+    public void addFuncionario(Funcionario funcionario) {
+        this.funcionarios.add(funcionario);
+    }
+
+    public String exibirGeneros() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("1- Masculino  2- Feminino\n");
+        return sb.toString();
     }
 
     public String exibirSetores() {

@@ -2,8 +2,9 @@ package model;
 
 import enumeracao.Genero;
 import exception.GeneroInvalidoException;
+import exception.QuantidadeLimiteFuncionariosException;
 import exception.SetorInvalidoException;
-import setor.Setor;
+import setor.*;
 
 public class Funcionario {
     private String nome;
@@ -15,7 +16,7 @@ public class Funcionario {
     private Setor setor;
     private int qtdVendas;
 
-    public Funcionario(String nome, String sobrenome, String codigoFuncionario, int idade, int genero, int setor) throws GeneroInvalidoException, SetorInvalidoException {
+    public Funcionario(String nome, String sobrenome, String codigoFuncionario, int idade, int genero, int setor) throws GeneroInvalidoException, SetorInvalidoException, QuantidadeLimiteFuncionariosException {
         this.nome = nome;
         this.sobrenome = sobrenome;
         this.codigoFuncionario = codigoFuncionario;
@@ -45,11 +46,19 @@ public class Funcionario {
         return null;
     }
 
-    public Setor definirSetor(int setor) {
-        switch (setor) {
-
+    public Setor definirSetor(int setor) throws QuantidadeLimiteFuncionariosException {
+        try {
+            switch (setor) {
+                case 1: return new GerenteFilial();
+                case 2: return new AtendimentoCliente();
+                case 3: return new GestaoPessoas();
+                case 4: return new Financeiro();
+                case 5: return new Vendas();
+                case 6: return new Almoxarifado();
+            } return null;
+        } catch (QuantidadeLimiteFuncionariosException e) {
+            System.out.println(e.getMessage());
         }
-
         return null;
     }
 
