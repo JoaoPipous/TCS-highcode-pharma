@@ -22,7 +22,7 @@ public class Caixa {
         this.entradas = new ArrayList<Negocio>();
         this.saidas = new ArrayList<Negocio>();
         this.produtosIniciais = new ArrayList<Produto>();
-        criarProdutosIniciais();
+        //criarProdutosIniciais();
         this.produtos = produtosIniciais;
     }
 
@@ -40,6 +40,10 @@ public class Caixa {
 
     public ArrayList<Produto> getProdutos() {
         return produtos;
+    }
+
+    public void adicionarProduto(Produto produto) {
+        produtos.add(produto);
     }
 
     public String removerProduto(Produto produto) throws ProdutoNaoEncontradoException {

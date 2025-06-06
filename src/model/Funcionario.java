@@ -1,6 +1,7 @@
 package model;
 
 import enumeracao.Genero;
+import exception.CodigoUnicoExistenteException;
 import exception.GeneroInvalidoException;
 import exception.QuantidadeLimiteFuncionariosException;
 import exception.SetorInvalidoException;
@@ -16,7 +17,7 @@ public class Funcionario {
     private Setor setor;
     private int qtdVendas;
 
-    public Funcionario(String nome, String sobrenome, String codigoFuncionario, int idade, int genero, int setor) throws GeneroInvalidoException, SetorInvalidoException, QuantidadeLimiteFuncionariosException {
+    public Funcionario(String nome, String sobrenome, String codigoFuncionario, int idade, int genero, int setor) throws GeneroInvalidoException, SetorInvalidoException, QuantidadeLimiteFuncionariosException, CodigoUnicoExistenteException {
         this.nome = nome;
         this.sobrenome = sobrenome;
         this.codigoFuncionario = codigoFuncionario;

@@ -1,3 +1,4 @@
+import exception.CodigoUnicoExistenteException;
 import model.Caixa;
 import model.Funcionario;
 import model.Transportadora;
@@ -17,6 +18,14 @@ public class Empresa {
 
     public void addFuncionario(Funcionario funcionario) {
         this.funcionarios.add(funcionario);
+    }
+
+    public void validarCodigoUnicoFuncionario(String codigoFuncionario) throws CodigoUnicoExistenteException {
+        for(Funcionario funcionario: funcionarios) {
+            if(codigoFuncionario.equals(funcionario.getCodigoFuncionario())) {
+                throw new CodigoUnicoExistenteException("Código único já existente. Insira outro código único.");
+            }
+        }
     }
 
     public String exibirGeneros() {
