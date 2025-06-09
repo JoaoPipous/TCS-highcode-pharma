@@ -10,29 +10,14 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class Almoxarifado extends Setor {
-
     static Random gerador = new Random();
-    private static int contador = 1;
     private static ArrayList<Produto> produtos;
     private static ArrayList<Produto> produtosIniciais;
 
-    public Almoxarifado() throws QuantidadeLimiteFuncionariosException {
-        super("Almoxarifado");
+    public Almoxarifado() {
+        super();
+        super.setNome("Almoxarifado");
         super.setQtdFuncionarios(3);
-
-        if(getContador() > getQtdFuncionarios()){
-            throw new QuantidadeLimiteFuncionariosException("Quantidade excedeu o limite de funcionários.");
-        }
-
-        setContador(getContador() + 1);
-    }
-
-    public static int getContador() {
-        return contador;
-    }
-
-    public static void setContador(int contador) {
-        contador = getContador() + 1;
     }
 
     public static ArrayList<Produto> getProdutos() {

@@ -5,6 +5,7 @@ import model.Funcionario;
 import model.ItemNegocio;
 import model.Negocio;
 import model.Produto;
+import setor.Almoxarifado;
 import setor.Setor;
 
 import java.security.spec.RSAOtherPrimeInfo;
@@ -12,6 +13,7 @@ import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+
 import exception.*;
 import model.Funcionario;
 import model.Produto;
@@ -26,28 +28,18 @@ public class Main {
     static Status status;
     static Negocio negocio;
     static DateTimeFormatter formatador = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+
     public static void main(String[] args) {
 
         Scanner sc = new Scanner(System.in);
         Empresa empresa = new Empresa();
 
-        // *** TESTES ***
-
-        try {
-            empresa.getAlmoxarifado().criarProdutosIniciais();
-        } catch(CategoriaInvalidaException e) {
-            System.out.println("\n" + e.getMessage());
+        for(Setor s : empresa.getSetores()) {
+            if(s instanceof Almoxarifado) {
+                ((Almoxarifado) s).exibirProdutos();
+                break;
+            }
         }
-
-        String[] nomesSetores = {"Almoxarifado", "Atendimento ao cliente", "Financeiro", "Gerente da filial", "Gestão de pessoas", "Vendas"};
-
-        for (int i = 0; i < nomesSetores.length; i++) {
-            empresa.criarSetor(nomesSetores[i]);
-        }
-
-        // *** TESTES ***
-
-        empresa.getAlmoxarifado().exibirProdutos();
 
         while (true) {
 
@@ -80,12 +72,13 @@ public class Main {
                     System.out.println("Digite o sobrenome do funcionário:");
                     String sobrenomeFuncionario = sc.nextLine();
 
-                    /* try {
-                        System.out.println("Digite o código único do funcionário:");
-                        String codigoFuncionario = sc.nextLine();
-                    } catch(CodigoUnicoExistenteException e) {
+                    System.out.println("Digite o código único do funcionário:");
+                    String codigoFuncionario = sc.nextLine();
+                    try {
+                        empresa.validarCodigoUnicoFuncionario(codigoFuncionario);
+                    } catch (CodigoUnicoExistenteException e) {
                         System.out.println(e.getMessage());
-                    } */
+                    }
 
                     System.out.println("Digite a idade do funcionário:");
                     int idadeFuncionario = Integer.parseInt(sc.nextLine());
@@ -111,20 +104,25 @@ public class Main {
 //                    }
 
                     try {
-                        empresa.validarCodigoUnicoFuncionario(codigoFuncionario);
-                        Funcionario funcionario = new Funcionario(nomeFuncionario, sobrenomeFuncionario, codigoFuncionario, idadeFuncionario, numGenero, numSetor);
+                        Setor setorDefinido = empresa.definirSetor(numSetor);
+                        Funcionario funcionario = new Funcionario(nomeFuncionario, sobrenomeFuncionario, codigoFuncionario, idadeFuncionario, numGenero, setorDefinido);
+                        //empresa.validarCodigoUnicoFuncionario(codigoFuncionario);
+                        //Funcionario funcionario = new Funcionario(nomeFuncionario, sobrenomeFuncionario, codigoFuncionario, idadeFuncionario, numGenero, numSetor);
                         empresa.addFuncionario(funcionario);
                         System.out.println("Funcionário adicionado com sucesso!");
                     } catch (CodigoUnicoExistenteException e) {
                         System.out.println(e.getMessage());
                     } catch (GeneroInvalidoException | SetorInvalidoException | QuantidadeLimiteFuncionariosException e) {
                         System.out.println(e.getMessage());
+                    } catch (CodigoUnicoExistenteException e) {
+                        System.out.println(e.getMessage());
+                    } catch (IllegalArgumentException e) {
+                        System.out.println(e.getMessage());
                     }
-
                     break;
-                  
+                }
+          
                  case 2:
-
                     System.out.println("Digite o nome do produto:");
                     String nomeProduto = sc.nextLine();
 
@@ -143,12 +141,17 @@ public class Main {
 
                     try {
                         Produto produto = new Produto(nomeProduto, valorCompra, valorVenda, qtdEstoque, categoria);
+                        for(Setor s : empresa.getSetores()) {
+                            if(s instanceof Almoxarifado) {
+                                ((Almoxarifado) s).adicionarProduto(produto);
+                                break;
+                            }
+                        }
                         empresa.getAlmoxarifado().adicionarProduto(produto);
                         System.out.println("Produto adicionado com sucesso!");
-                    } catch(CategoriaInvalidaException e) {
+                    } catch (CategoriaInvalidaException e) {
                         System.out.println(e.getMessage());
                     }
-
                     break;
 
                 case 3:
@@ -342,9 +345,14 @@ public class Main {
 
                 case 6:
                     System.out.println("Lista de produtos:\n");
-                    empresa.getAlmoxarifado().exibirProdutos();
+                    for(Setor s : empresa.getSetores()) {
+                        if(s instanceof Almoxarifado) {
+                            ((Almoxarifado) s).exibirProdutos();
+                            break;
+                        }
+                    }
                     break;
-                  
+          
                 case 7:
                     System.out.println("Lista de compras:\n");
                     empresa.getCaixa().exibirCompras();
@@ -381,7 +389,7 @@ public class Main {
                     for (Setor setor : empresa.getSetores()) {
                         System.out.println(setor.exibirSetor());
                     }
-                    break;       
+                    break;
 
                 case 13:
                     sc.close();
