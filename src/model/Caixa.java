@@ -42,24 +42,24 @@ public class Caixa {
     }
 
     public ArrayList<String> exibirVendas() {
-        ArrayList<String> vendasString = new ArrayList<String>();
+        ArrayList<String> vendasString = new ArrayList<>();
         if(entradas.isEmpty()) {
-
+            vendasString.add("Sem não possui vendas registradas.");
         } else {
             for(Negocio v : entradas) {
-                vendasString.add("Negócio feito em: " + v.getDataNegocioFormatada());
+                vendasString.add(v.exibirDados());
             }
         }
         return vendasString;
     }
 
     public ArrayList<String> exibirCompras() {
-        ArrayList<String> comprasString = new ArrayList<String>();
+        ArrayList<String> comprasString = new ArrayList<>();
         if(saidas.isEmpty()) {
-
+            comprasString.add("Sem não possui compras registradas.");
         } else {
             for(Negocio c : saidas) {
-                comprasString.add("Negócio feito em: " + c.getDataNegocioFormatada());
+                comprasString.add(c.exibirDados());
             }
         }
         return comprasString;

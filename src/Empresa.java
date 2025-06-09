@@ -1,3 +1,4 @@
+import exception.CategoriaInvalidaException;
 import exception.EstoqueInsuficienteException;
 import model.*;
 import exception.QuantidadeLimiteFuncionariosException;
@@ -37,10 +38,6 @@ public class Empresa {
         }
     }
 
-    public ArrayList<Setor> getSetores() {
-        return setores;
-    }
-
     public String exibirGeneros() {
         StringBuilder sb = new StringBuilder();
         sb.append("1- Masculino  2- Feminino\n");
@@ -48,7 +45,6 @@ public class Empresa {
     }
 
     public Setor definirSetor(int setor) throws QuantidadeLimiteFuncionariosException, IllegalArgumentException {
-
         for(Setor s : setores) {
             switch (setor) {
 
@@ -134,7 +130,6 @@ public class Empresa {
 
             }
         } return null;
-
     }
 
     public void registrarCompra(Negocio compra) {
@@ -168,10 +163,6 @@ public class Empresa {
         for (ItemNegocio item : venda.getProdutos()) {
             item.getProduto().removeEstoque(item.getQtd()); // Agora essa operação é segura
         }
-    }
-
-    public Almoxarifado getAlmoxarifado() {
-        return almoxarifado;
     }
   
     public String exibirSetores() {
