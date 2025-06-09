@@ -8,6 +8,8 @@ public class Setor {
 
     public Setor(String nome) {
         this.nome = nome;
+        qtdFuncionariosTotal = 0;
+    }
     
     public Setor() {
         qtdFuncionariosTotal++;
