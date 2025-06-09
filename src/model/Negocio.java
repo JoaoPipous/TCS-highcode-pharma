@@ -35,12 +35,12 @@ public class Negocio {
 
     // LISTA DE FUNCIONARIOS REMOVIDA, ADICIONAR NOVAMENTE DEPOIS
     public Negocio(Status status, ArrayList<ItemNegocio> itens, LocalDateTime dataProgramada, TipoNegocio tipo) {
-        this.valorNegocio = calcularValorTotal();
         this.status = status;
         // this.funcionariosEnvolvidos = funcionariosEnvolvidos;
         this.produtos = itens;
         this.dataProgramada = dataProgramada;
         this.tipo = tipo;
+        this.valorNegocio = calcularValorTotal();
     }
 
     public String getDataNegocioFormatada() {
@@ -53,10 +53,6 @@ public class Negocio {
 
     public LocalDateTime getDataNegocio() {
         return dataNegocio;
-    }
-
-    public double getValorNegocio() {
-        return valorNegocio;
     }
 
     public Status getStatus() {
@@ -89,11 +85,11 @@ public class Negocio {
         double soma = 0;
         if(tipo.equals(TipoNegocio.VENDA)) {
             for(ItemNegocio item : produtos) {
-                soma += item.getProduto().getValorVenda();
+                soma += item.getProduto().getValorVenda() * item.getQtd();
             }
         } else {
             for(ItemNegocio item : produtos) {
-                soma += item.getProduto().getValorCompra();
+                soma += item.getProduto().getValorCompra() * item.getQtd();
             }
         }
         return soma;
