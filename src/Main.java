@@ -20,6 +20,7 @@ import java.util.Scanner;
 import java.util.ArrayList;
 
 public class Main {
+    static LocalDateTime dataHoraLida = LocalDateTime.now();
     static TipoNegocio tipoNegocio;
     static Status status;
     static Negocio negocio;
