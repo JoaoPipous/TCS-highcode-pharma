@@ -1,36 +1,31 @@
 package setor;
 
 public class Setor {
-    protected static int qtdFuncionariosTotal = 0;
-    private static int contador = 0;
+    protected int qtdFuncionariosTotal = 0;
+    private int contador = 0;
     private String nome;
-    private int qtdFuncionarios;
-
-    public Setor(String nome) {
-        this.nome = nome;
+    private int qtdFuncionarios = 0;
     
-    public Setor() {
-        qtdFuncionariosTotal++;
-    }
+    public Setor() {}
 
     public void addQtdFuncionario() {
         qtdFuncionarios++;
     }
 
-    public static int getQtdFuncionariosTotal() {
+    public int getQtdFuncionariosTotal() {
         return qtdFuncionariosTotal;
     }
 
-    public static void setQtdFuncionariosTotal(int qtdFuncionariosTotal) {
-        Setor.qtdFuncionariosTotal = qtdFuncionariosTotal;
+    public void setQtdFuncionariosTotal(int qtdFuncionariosTotal) {
+        this.qtdFuncionariosTotal = qtdFuncionariosTotal;
     }
 
-    public static int getContador() {
+    public int getContador() {
         return contador;
     }
 
-    public static void setContador(int contador) {
-        Setor.contador = contador;
+    public void setContador(int contador) {
+        this.contador = contador;
     }
 
     public String getNome() {

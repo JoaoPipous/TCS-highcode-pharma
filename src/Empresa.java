@@ -2,8 +2,7 @@ import model.Caixa;
 import exception.QuantidadeLimiteFuncionariosException;
 import model.ItemNegocio;
 import model.Negocio;
-import setor.Almoxarifado;
-import setor.Setor;
+import setor.*;
 import exception.CodigoUnicoExistenteException;
 import model.Caixa;
 import model.Funcionario;
@@ -14,20 +13,15 @@ import java.util.List;
 
 public class Empresa {
     private Caixa caixa;
-    private Almoxarifado almoxarifado;
     private ArrayList<Setor> setores;
     private Transportadora transportadoras;
-    private List<Funcionario> funcionarios = new ArrayList<Funcionario>();
+    private List<Funcionario> funcionarios;
 
     public Empresa() {
         this.caixa = new Caixa(200000);
         this.transportadoras = new Transportadora();
-        try {
-            this.almoxarifado = new Almoxarifado("Almoxarifado");
-        } catch(QuantidadeLimiteFuncionariosException e) {
-            e.printStackTrace();
-        }
-        setores = new ArrayList<>();
+        this.funcionarios = new ArrayList<Funcionario>();
+        setores = new ArrayList<>(List.of(new Almoxarifado(), new AtendimentoCliente(), new Financeiro(), new GerenteFilial(), new GestaoPessoas(), new Vendas()));
     }
 
     public void addFuncionario(Funcionario funcionario) {
@@ -47,9 +41,95 @@ public class Empresa {
         sb.append("1- Masculino  2- Feminino\n");
         return sb.toString();
     }
-  
-    public void criarSetor(String nome) {
-        setores.add(new Setor(nome));
+
+    public Setor definirSetor(int setor) throws QuantidadeLimiteFuncionariosException, IllegalArgumentException {
+
+        for(Setor s : setores) {
+            switch (setor) {
+
+                case 1: {
+                    if (s instanceof Almoxarifado) {
+                        if (s.getContador() > s.getQtdFuncionarios()) {
+                            throw new QuantidadeLimiteFuncionariosException("Quantidade excedeu limite de funcionários.");
+                        } else {
+                            s.setContador(s.getContador() + 1);
+                            s.setQtdFuncionariosTotal(s.getQtdFuncionariosTotal() + 1);
+                            return s;
+                        }
+                    }
+                    break;
+                }
+
+                case 2: {
+                    if (s instanceof AtendimentoCliente) {
+                        if (s.getContador() > s.getQtdFuncionarios()) {
+                            throw new QuantidadeLimiteFuncionariosException("Quantidade excedeu limite de funcionários.");
+                        } else {
+                            s.setContador(s.getContador() + 1);
+                            s.setQtdFuncionariosTotal(s.getQtdFuncionariosTotal() + 1);
+                            return s;
+                        }
+                    }
+                    break;
+                }
+
+                case 3: {
+                    if (s instanceof Financeiro) {
+                        if (s.getContador() > s.getQtdFuncionarios()) {
+                            throw new QuantidadeLimiteFuncionariosException("Quantidade excedeu limite de funcionários.");
+                        } else {
+                            s.setContador(s.getContador() + 1);
+                            s.setQtdFuncionariosTotal(s.getQtdFuncionariosTotal() + 1);
+                            return s;
+                        }
+                    }
+                    break;
+                }
+
+                case 4: {
+                    if (s instanceof GerenteFilial) {
+                        if (s.getContador() > s.getQtdFuncionarios()) {
+                            throw new QuantidadeLimiteFuncionariosException("Quantidade excedeu limite de funcionários.");
+                        } else {
+                            s.setContador(s.getContador() + 1);
+                            s.setQtdFuncionariosTotal(s.getQtdFuncionariosTotal() + 1);
+                            return s;
+                        }
+                    }
+                    break;
+                }
+
+                case 5: {
+                    if (s instanceof GestaoPessoas) {
+                        if (s.getContador() > s.getQtdFuncionarios()) {
+                            throw new QuantidadeLimiteFuncionariosException("Quantidade excedeu limite de funcionários.");
+                        } else {
+                            s.setContador(s.getContador() + 1);
+                            s.setQtdFuncionariosTotal(s.getQtdFuncionariosTotal() + 1);
+                            return s;
+                        }
+                    }
+                    break;
+                }
+
+                case 6: {
+                    if (s instanceof Vendas) {
+                        if (s.getContador() > s.getQtdFuncionarios()) {
+                            throw new QuantidadeLimiteFuncionariosException("Quantidade excedeu limite de funcionários.");
+                        } else {
+                            s.setContador(s.getContador() + 1);
+                            s.setQtdFuncionariosTotal(s.getQtdFuncionariosTotal() + 1);
+                            return s;
+                        }
+                    }
+                    break;
+                }
+
+                default: throw new IllegalArgumentException("Entrada inválida. Setor indefinido.");
+
+            }
+        } return null;
+
     }
 
     public void registrarCompra(Negocio compra) {
@@ -68,7 +148,14 @@ public class Empresa {
   
     public String exibirSetores() {
         StringBuilder sb = new StringBuilder();
-        sb.append("1- Gerente de Filial  2- Atendimento ao Cliente  3- Gestão de Pessoas  4- Financeiro  5- Vendas  6- Almoxarifado\n");
+
+        int contador = 1;
+        for(Setor s : setores) {
+            sb.append(contador + "- " + s.getNome() + "  ");
+            contador++;
+        }
+        sb.append("\n");
+
         return sb.toString();
     }
 
@@ -77,4 +164,7 @@ public class Empresa {
     }
 
     public Transportadora getTransportadoras() { return transportadoras; }
+
+    public ArrayList<Setor> getSetores() { return setores; }
+
 }

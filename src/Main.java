@@ -5,6 +5,7 @@ import model.Funcionario;
 import model.ItemNegocio;
 import model.Negocio;
 import model.Produto;
+import setor.Almoxarifado;
 import setor.Setor;
 
 import java.security.spec.RSAOtherPrimeInfo;
@@ -12,6 +13,7 @@ import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+
 import exception.*;
 import model.Funcionario;
 import model.Produto;
@@ -25,6 +27,7 @@ public class Main {
     static Status status;
     static Negocio negocio;
     static DateTimeFormatter formatador = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+
     public static void main(String[] args) {
 
         Scanner sc = new Scanner(System.in);
@@ -32,20 +35,14 @@ public class Main {
 
         // *** TESTES ***
 
-        empresa.getAlmoxarifado().criarProdutosIniciais();
-
-        String[] nomesSetores = {"Almoxarifado", "Atendimento ao cliente", "Financeiro", "Gerente da filial", "Gestão de pessoas", "Vendas"};
-
-        for (int i = 0; i < nomesSetores.length; i++) {
-            empresa.criarSetor(nomesSetores[i]);
-        }
-
         // *** TESTES ***
 
-        Scanner sc = new Scanner(System.in);
-        Empresa empresa = new Empresa();
-
-        empresa.getCaixa().exibirProdutos();
+        for(Setor s : empresa.getSetores()) {
+            if(s instanceof Almoxarifado) {
+                ((Almoxarifado) s).exibirProdutos();
+                break;
+            }
+        }
 
         while (true) {
 
@@ -70,6 +67,7 @@ public class Main {
             int opcao = Integer.parseInt(sc.nextLine());
 
             switch (opcao) {
+
                 case 1: {
 
                     System.out.println("Digite o nome do funcionário:");
@@ -78,12 +76,13 @@ public class Main {
                     System.out.println("Digite o sobrenome do funcionário:");
                     String sobrenomeFuncionario = sc.nextLine();
 
-                    /* try {
-                        System.out.println("Digite o código único do funcionário:");
-                        String codigoFuncionario = sc.nextLine();
-                    } catch(CodigoUnicoExistenteException e) {
+                    System.out.println("Digite o código único do funcionário:");
+                    String codigoFuncionario = sc.nextLine();
+                    try {
+                        empresa.validarCodigoUnicoFuncionario(codigoFuncionario);
+                    } catch (CodigoUnicoExistenteException e) {
                         System.out.println(e.getMessage());
-                    } */
+                    }
 
                     System.out.println("Digite a idade do funcionário:");
                     int idadeFuncionario = Integer.parseInt(sc.nextLine());
@@ -97,7 +96,8 @@ public class Main {
                     int numSetor = Integer.parseInt(sc.nextLine());
 
                     try {
-                       Funcionario funcionario = new Funcionario(nomeFuncionario, sobrenomeFuncionario, codigoFuncionario, idadeFuncionario, numGenero, numSetor);
+                        Setor setorDefinido = empresa.definirSetor(numSetor);
+                        Funcionario funcionario = new Funcionario(nomeFuncionario, sobrenomeFuncionario, codigoFuncionario, idadeFuncionario, numGenero, setorDefinido);
                         empresa.addFuncionario(funcionario);
                         System.out.println("Funcionário adicionado com sucesso!");
                     } catch (GeneroInvalidoException e) {
@@ -106,11 +106,16 @@ public class Main {
                         System.out.println(e.getMessage());
                     } catch (QuantidadeLimiteFuncionariosException e) {
                         System.out.println(e.getMessage());
+                    } catch (CodigoUnicoExistenteException e) {
+                        System.out.println(e.getMessage());
+                    } catch (IllegalArgumentException e) {
+                        System.out.println(e.getMessage());
                     }
 
                     break;
-                  
-                 case 2: {
+                }
+
+                case 2:
 
                     System.out.println("Digite o nome do produto:");
                     String nomeProduto = sc.nextLine();
@@ -130,9 +135,14 @@ public class Main {
 
                     try {
                         Produto produto = new Produto(nomeProduto, valorCompra, valorVenda, qtdEstoque, categoria);
-                        empresa.getCaixa().adicionarProduto(produto);
+                        for(Setor s : empresa.getSetores()) {
+                            if(s instanceof Almoxarifado) {
+                                ((Almoxarifado) s).adicionarProduto(produto);
+                                break;
+                            }
+                        }
                         System.out.println("Produto adicionado com sucesso!");
-                    } catch(CategoriaInvalidaException e) {
+                    } catch (CategoriaInvalidaException e) {
                         System.out.println(e.getMessage());
                     }
 
@@ -141,7 +151,7 @@ public class Main {
                 case 3:
                     ArrayList<ItemNegocio> produtosCompra = new ArrayList<>();
                     tipoNegocio = TipoNegocio.COMPRA;
-                    LocalDateTime dataHoraLida;
+                    LocalDateTime dataHoraLida = LocalDateTime.now();
 
                     System.out.println("\nQual o status da compra?");
                     System.out.println("1 - Em aberto");
@@ -151,8 +161,8 @@ public class Main {
 
                     status = (opcao == 1 ? Status.ABERTO : Status.FINALIZADO);
 
-                    while(true) {
-                        if(status.equals(Status.ABERTO)) {
+                    while (true) {
+                        if (status.equals(Status.ABERTO)) {
                             System.out.println("\nInsira a data de finalização da compra, formato: dd/MM/yyyy hh:mm:ss");
                             try {
                                 String data = sc.nextLine();
@@ -161,18 +171,24 @@ public class Main {
                             } catch (DateTimeParseException e) {
                                 System.out.println("\nErro: O formato digitado está incorreto. Por favor, use o formato dd/MM/yyyy HH:mm.");
                             }
+                        } else {
+                            break;
                         }
                     }
 
                     while (true) {
-                        System.out.println("\nEscolha o produto que deseja comprar: ");
+                        System.out.println("\nEscolha o produto que deseja comprar: \n");
 
                         int contador = 1;
 
-
-                        for (Produto p : empresa.getAlmoxarifado().getProdutos()) {
-                            System.out.println(contador + " - " + p.exibirInformacoes());
-                            contador++;
+                        for(Setor s : empresa.getSetores()) {
+                            if(s instanceof Almoxarifado) {
+                                for (Produto p : ((Almoxarifado) s).getProdutos()) {
+                                    System.out.println(contador + " - " + p.exibirInformacoes());
+                                    contador++;
+                                }
+                                break;
+                            }
                         }
 
                         System.out.println(contador + " - Sair.");
@@ -183,24 +199,30 @@ public class Main {
                             break;
                         }
 
+                        System.out.println("\nInforme a quantidade que deseja comprar: ");
                         int quantidadeProduto = Integer.parseInt(sc.nextLine());
 
-                        if (produto >= 1 && produto <= empresa.getAlmoxarifado().getProdutos().size()) {
-                            produtosCompra.add(new ItemNegocio(empresa.getAlmoxarifado().getProdutos().get(produto - 1), quantidadeProduto));
-                        } else {
-                            System.out.println("\nProduto não encontrado.");
+                        for(Setor s : empresa.getSetores()) {
+                            if(s instanceof Almoxarifado) {
+                                if (produto >= 1 && produto <= ((Almoxarifado) s).getProdutos().size()) {
+                                    produtosCompra.add(new ItemNegocio(((Almoxarifado) s).getProdutos().get(produto - 1), quantidadeProduto));
+                                } else {
+                                    System.out.println("\nProduto não encontrado.");
+                                }
+                                break;
+                            }
                         }
                     }
 
-                    if(status.equals(Status.FINALIZADO)) {
+                    if (status.equals(Status.FINALIZADO)) {
                         negocio = new Negocio(status, produtosCompra, TipoNegocio.COMPRA);
                     } else {
                         negocio = new Negocio(status, produtosCompra, dataHoraLida, TipoNegocio.COMPRA);
                     }
 
-                    empresa.registrarCompra(negocio);        
-                   
-                   break;
+                    empresa.registrarCompra(negocio);
+
+                    break;
 
                 case 4:
                     ArrayList<ItemNegocio> produtosVenda = new ArrayList<>();
@@ -219,10 +241,14 @@ public class Main {
 
                         int contador = 1;
 
-
-                        for (Produto p : empresa.getAlmoxarifado().getProdutos()) {
-                            System.out.println(contador + " - " + p.exibirInformacoes());
-                            contador++;
+                        for(Setor s : empresa.getSetores()) {
+                            if(s instanceof Almoxarifado) {
+                                for (Produto p : ((Almoxarifado) s).getProdutos()) {
+                                    System.out.println(contador + " - " + p.exibirInformacoes());
+                                    contador++;
+                                }
+                                break;
+                            }
                         }
 
                         System.out.println(contador + " - Sair.");
@@ -235,41 +261,51 @@ public class Main {
 
                         int quantidadeProduto = Integer.parseInt(sc.nextLine());
 
-                        if (produto >= 1 && produto <= empresa.getAlmoxarifado().getProdutos().size()) {
-                            produtosVenda.add(new ItemNegocio(empresa.getAlmoxarifado().getProdutos().get(produto - 1), quantidadeProduto));
-                        } else {
-                            System.out.println("\nProduto não encontrado.");
+                        for(Setor s : empresa.getSetores()) {
+                            if(s instanceof Almoxarifado) {
+                                if (produto >= 1 && produto <= ((Almoxarifado) s).getProdutos().size()) {
+                                    produtosVenda.add(new ItemNegocio(((Almoxarifado) s).getProdutos().get(produto - 1), quantidadeProduto));
+                                } else {
+                                    System.out.println("\nProduto não encontrado.");
+                                }
+                                break;
+                            }
                         }
                     }
 
                     negocio = new Negocio(status, produtosVenda, TipoNegocio.VENDA);
                     empresa.registrarVenda(negocio);
                     break;
-                  
+
                 case 5:
                     break;
-                  
+
                 case 6:
                     System.out.println("Lista de produtos:\n");
-                    empresa.getAlmoxarifado().exibirProdutos();
+                    for(Setor s : empresa.getSetores()) {
+                        if(s instanceof Almoxarifado) {
+                            ((Almoxarifado) s).exibirProdutos();
+                            break;
+                        }
+                    }
                     break;
-                  
-                case 7: {
+
+                case 7:
                     System.out.println("Lista de compras:\n");
                     empresa.getCaixa().exibirCompras();
                     break;
 
-                case 8: {
+                case 8:
                     System.out.println("Lista de vendas:\n");
                     empresa.getCaixa().exibirVendas();
                     break;
 
-                case 9: {
+                case 9:
                     System.out.println("Transportadoras:\n");
                     empresa.getTransportadoras().exibirTransportadora();
                     break;
 
-                case 10: {
+                case 10:
                     System.out.println("Para verificar a estimativa mensal, digite o número referente ao mês desejado: (1 a 12)");
                     int mensal = Integer.parseInt(sc.nextLine());
 
@@ -278,8 +314,8 @@ public class Main {
 
                     System.out.printf("Valor total do caixa: R$%.2f\nEstimativa mensal: R$%.2f\nEstimativa anual: R$%.2f\n", empresa.getCaixa().getValorTotal(), empresa.getCaixa().estimarLucroMensal(mensal), empresa.getCaixa().estimarLucroAnual(anual));
                     break;
-                  
-                  case 11: {
+
+                case 11:
                     System.out.println("Negócios em aberto:\n");
                     empresa.getCaixa().exibirNegociosAbertos();
                     break;
@@ -290,7 +326,7 @@ public class Main {
                     for (Setor setor : empresa.getSetores()) {
                         System.out.println(setor.exibirSetor());
                     }
-                    break;       
+                    break;
 
                 case 13:
                     sc.close();
