@@ -16,6 +16,7 @@ import exception.*;
 import model.Funcionario;
 import model.Produto;
 
+import java.time.Year;
 import java.util.Scanner;
 import java.util.ArrayList;
 
@@ -30,10 +31,28 @@ public class Main {
         Scanner sc = new Scanner(System.in);
         Empresa empresa = new Empresa();
 
+        // *** TESTES ***
+
+        try {
+            empresa.getAlmoxarifado().criarProdutosIniciais();
+        } catch(CategoriaInvalidaException e) {
+            System.out.println("\n" + e.getMessage());
+        }
+
+        String[] nomesSetores = {"Almoxarifado", "Atendimento ao cliente", "Financeiro", "Gerente da filial", "Gestão de pessoas", "Vendas"};
+
+        for (int i = 0; i < nomesSetores.length; i++) {
+            empresa.criarSetor(nomesSetores[i]);
+        }
+
+        // *** TESTES ***
+
+        empresa.getAlmoxarifado().exibirProdutos();
+
+        while (true) {
+
             // *** Vendas e compras adicionadas quando Status = FINALIZADO
             // Caso a venda esteja programada ainda falta implementar datas ***
-          
-        while (true) {
 
             System.out.println("\nEscolha uma opção:");
             System.out.println("1 - Adicionar funcionário");
@@ -53,7 +72,8 @@ public class Main {
             int opcao = Integer.parseInt(sc.nextLine());
 
             switch (opcao) {
-                case 1: 
+                case 1:
+
                     System.out.println("Digite o nome do funcionário:");
                     String nomeFuncionario = sc.nextLine();
 
@@ -66,9 +86,6 @@ public class Main {
                     } catch(CodigoUnicoExistenteException e) {
                         System.out.println(e.getMessage());
                     } */
-                
-                    System.out.println("Digite o código único do funcionário:");
-                    String codigoFuncionario = sc.nextLine();
 
                     System.out.println("Digite a idade do funcionário:");
                     int idadeFuncionario = Integer.parseInt(sc.nextLine());
@@ -92,21 +109,11 @@ public class Main {
 //                    } catch (QuantidadeLimiteFuncionariosException e) {
 //                        System.out.println(e.getMessage());
 //                    }
-                
-                try {
-                        empresa.validarCodigoUnicoFuncionario(codigoFuncionario);
-                        Funcionario funcionario = new Funcionario(nomeFuncionario, sobrenomeFuncionario, codigoFuncionario, idadeFuncionario, numGenero, numSetor);
-                        empresa.addFuncionario(funcionario);
-                        System.out.println("Funcionário adicionado com sucesso!");
-                    } catch (CodigoUnicoExistenteException e) {
-                        System.out.println(e.getMessage());
-                    } catch (GeneroInvalidoException | SetorInvalidoException | QuantidadeLimiteFuncionariosException e) {
-                        System.out.println(e.getMessage());
-                    }
 
                     break;
+                  
+                 case 2:
 
-                case 2: 
                     System.out.println("Digite o nome do produto:");
                     String nomeProduto = sc.nextLine();
 
@@ -127,7 +134,7 @@ public class Main {
                         Produto produto = new Produto(nomeProduto, valorCompra, valorVenda, qtdEstoque, categoria);
                         empresa.getAlmoxarifado().adicionarProduto(produto);
                         System.out.println("Produto adicionado com sucesso!");
-                    } catch (CategoriaInvalidaException e) {
+                    } catch(CategoriaInvalidaException e) {
                         System.out.println(e.getMessage());
                     }
 
@@ -136,7 +143,6 @@ public class Main {
                 case 3:
                     ArrayList<ItemNegocio> produtosCompra = new ArrayList<>();
                     tipoNegocio = TipoNegocio.COMPRA;
-                    LocalDateTime dataHoraLida = LocalDateTime.now();
 
                     System.out.println("\nQual o status da compra?");
                     System.out.println("1 - Em aberto");
@@ -176,7 +182,7 @@ public class Main {
 
                     // Loop até o usuário escolher sair
                     while (true) {
-                        System.out.println("\nEscolha o produto que deseja comprar: \n");
+                        System.out.println("\nEscolha o(s) produto da compra: \n");
 
                         int contador = 1;
 
@@ -196,7 +202,7 @@ public class Main {
                             break;
                         }
 
-                        System.out.println("\nInforme a quantidade que deseja comprar: ");
+                        System.out.println("\nInforme a quantidade: ");
                         int quantidadeProduto = Integer.parseInt(sc.nextLine());
 
                         // Verifica se o produto existe
@@ -315,14 +321,14 @@ public class Main {
                     }
 
                     break;
-                  
-                case 5: 
+
+                case 5:
                     System.out.println("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
                     System.out.println("Lista de Funcionários:");
                     empresa.exibirFuncionarios();
                     System.out.println("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
-                    break;           
-                  
+                    break;
+
                 case 6:
                     System.out.println("Lista de produtos:\n");
                     empresa.getAlmoxarifado().exibirProdutos();
@@ -343,21 +349,17 @@ public class Main {
                     empresa.getTransportadoras().exibirTransportadora();
                     break;
 
-                case 10: 
+                case 10:
                     System.out.println("Para verificar a estimativa mensal, digite o número referente ao mês desejado: (1 a 12)");
                     int mensal = Integer.parseInt(sc.nextLine());
 
                     System.out.println("Para verificar a estimativa anual, digite o ano desejado:");
                     int anual = Integer.parseInt(sc.nextLine());
 
-                    System.out.printf("Valor total do caixa: R$%.2f\nEstimativa mensal: R$%.2f\nEstimativa anual: R$%.2f\n",
-                            empresa.getCaixa().getValorTotal(),
-                            empresa.getCaixa().estimarLucroMensal(mensal),
-                            empresa.getCaixa().estimarLucroAnual(anual));
+                    System.out.printf("Valor total do caixa: R$%.2f\nEstimativa mensal: R$%.2f\nEstimativa anual: R$%.2f\n", empresa.getCaixa().getValorTotal(), empresa.getCaixa().estimarLucroMensal(mensal), empresa.getCaixa().estimarLucroAnual(anual));
                     break;
-                
-
-                case 11: 
+                  
+                  case 11:
                     System.out.println("Negócios em aberto:\n");
                     empresa.getCaixa().exibirNegociosAbertos();
                     break;
@@ -377,7 +379,6 @@ public class Main {
                 default:
                     System.out.println("Entrada inválida!");
                     break;
-                }
             }
         }
     }
