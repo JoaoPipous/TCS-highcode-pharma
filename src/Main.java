@@ -110,6 +110,17 @@ public class Main {
 //                        System.out.println(e.getMessage());
 //                    }
 
+                    try {
+                        empresa.validarCodigoUnicoFuncionario(codigoFuncionario);
+                        Funcionario funcionario = new Funcionario(nomeFuncionario, sobrenomeFuncionario, codigoFuncionario, idadeFuncionario, numGenero, numSetor);
+                        empresa.addFuncionario(funcionario);
+                        System.out.println("Funcionário adicionado com sucesso!");
+                    } catch (CodigoUnicoExistenteException e) {
+                        System.out.println(e.getMessage());
+                    } catch (GeneroInvalidoException | SetorInvalidoException | QuantidadeLimiteFuncionariosException e) {
+                        System.out.println(e.getMessage());
+                    }
+
                     break;
                   
                  case 2:
