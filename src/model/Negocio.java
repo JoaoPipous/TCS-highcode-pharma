@@ -17,18 +17,27 @@ public class Negocio {
     private LocalDateTime dataProgramada;
     private TipoNegocio tipo;
 
-    public Negocio(Status status, ArrayList<Funcionario> funcionariosEnvolvidos, ArrayList<ItemNegocio> itens, TipoNegocio tipo) {
+    // *** APENAS PARA TESTES, REMOVER DEPOIS ***
+    public Negocio(Status status, ArrayList<ItemNegocio> itens, TipoNegocio tipo) {
+        this.status = status;
+        this.produtos = itens;
+        this.tipo = tipo;
         this.valorNegocio = calcularValorTotal();
+    }
+
+    public Negocio(Status status, ArrayList<Funcionario> funcionariosEnvolvidos, ArrayList<ItemNegocio> itens, TipoNegocio tipo) {
         this.status = status;
         this.funcionariosEnvolvidos = funcionariosEnvolvidos;
         this.produtos = itens;
         this.tipo = tipo;
+        this.valorNegocio = calcularValorTotal();
     }
 
-    public Negocio(Status status, ArrayList<Funcionario> funcionariosEnvolvidos, ArrayList<ItemNegocio> itens, LocalDateTime dataProgramada, TipoNegocio tipo) {
+    // LISTA DE FUNCIONARIOS REMOVIDA, ADICIONAR NOVAMENTE DEPOIS
+    public Negocio(Status status, ArrayList<ItemNegocio> itens, LocalDateTime dataProgramada, TipoNegocio tipo) {
         this.valorNegocio = calcularValorTotal();
         this.status = status;
-        this.funcionariosEnvolvidos = funcionariosEnvolvidos;
+        // this.funcionariosEnvolvidos = funcionariosEnvolvidos;
         this.produtos = itens;
         this.dataProgramada = dataProgramada;
         this.tipo = tipo;
@@ -58,7 +67,7 @@ public class Negocio {
         return funcionariosEnvolvidos;
     }
 
-    public ArrayList<ItemNegocio> getProduto() {
+    public ArrayList<ItemNegocio> getProdutos() {
         return produtos;
     }
 

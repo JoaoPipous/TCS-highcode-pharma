@@ -1,21 +1,58 @@
+import enumeracao.Status;
+import enumeracao.TipoNegocio;
+import exception.ProdutoNaoEncontradoException;
+import model.Funcionario;
+import model.ItemNegocio;
+import model.Negocio;
+import model.Produto;
+import setor.Setor;
+
+import java.security.spec.RSAOtherPrimeInfo;
+import java.time.LocalDateTime;
+import java.time.Month;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import exception.*;
 import model.Funcionario;
 import model.Produto;
 
 import java.time.Year;
 import java.util.Scanner;
+import java.util.ArrayList;
 
 public class Main {
+    static TipoNegocio tipoNegocio;
+    static Status status;
+    static Negocio negocio;
+    static DateTimeFormatter formatador = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
     public static void main(String[] args) {
+
+        Scanner sc = new Scanner(System.in);
+        Empresa empresa = new Empresa();
+
+        // *** TESTES ***
+
+        empresa.getAlmoxarifado().criarProdutosIniciais();
+
+        String[] nomesSetores = {"Almoxarifado", "Atendimento ao cliente", "Financeiro", "Gerente da filial", "Gestão de pessoas", "Vendas"};
+
+        for (int i = 0; i < nomesSetores.length; i++) {
+            empresa.criarSetor(nomesSetores[i]);
+        }
+
+        // *** TESTES ***
 
         Scanner sc = new Scanner(System.in);
         Empresa empresa = new Empresa();
 
         empresa.getCaixa().exibirProdutos();
 
-        while(true) {
+        while (true) {
 
-            System.out.println("Escolha uma opção:");
+            // *** Vendas e compras adicionadas quando Status = FINALIZADO
+            // Caso a venda esteja programada ainda falta implementar datas ***
+
+            System.out.println("\nEscolha uma opção:");
             System.out.println("1 - Adicionar funcionário");
             System.out.println("2 - Adicionar produto");
             System.out.println("3 - Realizar uma compra");
@@ -27,12 +64,12 @@ public class Main {
             System.out.println("9 - Exibir transportadoras");
             System.out.println("10 - Mostrar o valor total do caixa da empresa e estimativa de lucros");
             System.out.println("11 - Exibir negócios em aberto");
-            System.out.println("12 - Sair");
+            System.out.println("12 - Exibir setores da empresa");
+            System.out.println("13 - Sair");
 
             int opcao = Integer.parseInt(sc.nextLine());
 
             switch (opcao) {
-
                 case 1: {
 
                     System.out.println("Digite o nome do funcionário:");
@@ -41,7 +78,7 @@ public class Main {
                     System.out.println("Digite o sobrenome do funcionário:");
                     String sobrenomeFuncionario = sc.nextLine();
 
-                    /*try {
+                    /* try {
                         System.out.println("Digite o código único do funcionário:");
                         String codigoFuncionario = sc.nextLine();
                     } catch(CodigoUnicoExistenteException e) {
@@ -72,9 +109,8 @@ public class Main {
                     }
 
                     break;
-                }
-
-                case 2: {
+                  
+                 case 2: {
 
                     System.out.println("Digite o nome do produto:");
                     String nomeProduto = sc.nextLine();
@@ -101,50 +137,139 @@ public class Main {
                     }
 
                     break;
-                }
 
-                case 3: {
+                case 3:
+                    ArrayList<ItemNegocio> produtosCompra = new ArrayList<>();
+                    tipoNegocio = TipoNegocio.COMPRA;
+                    LocalDateTime dataHoraLida;
+
+                    System.out.println("\nQual o status da compra?");
+                    System.out.println("1 - Em aberto");
+                    System.out.println("2 - Finalizada");
+
+                    opcao = Integer.parseInt(sc.nextLine());
+
+                    status = (opcao == 1 ? Status.ABERTO : Status.FINALIZADO);
+
+                    while(true) {
+                        if(status.equals(Status.ABERTO)) {
+                            System.out.println("\nInsira a data de finalização da compra, formato: dd/MM/yyyy hh:mm:ss");
+                            try {
+                                String data = sc.nextLine();
+                                dataHoraLida = LocalDateTime.parse(data, formatador);
+                                break;
+                            } catch (DateTimeParseException e) {
+                                System.out.println("\nErro: O formato digitado está incorreto. Por favor, use o formato dd/MM/yyyy HH:mm.");
+                            }
+                        }
+                    }
+
+                    while (true) {
+                        System.out.println("\nEscolha o produto que deseja comprar: ");
+
+                        int contador = 1;
+
+
+                        for (Produto p : empresa.getAlmoxarifado().getProdutos()) {
+                            System.out.println(contador + " - " + p.exibirInformacoes());
+                            contador++;
+                        }
+
+                        System.out.println(contador + " - Sair.");
+
+                        int produto = Integer.parseInt(sc.nextLine());
+
+                        if (produto == contador) {
+                            break;
+                        }
+
+                        int quantidadeProduto = Integer.parseInt(sc.nextLine());
+
+                        if (produto >= 1 && produto <= empresa.getAlmoxarifado().getProdutos().size()) {
+                            produtosCompra.add(new ItemNegocio(empresa.getAlmoxarifado().getProdutos().get(produto - 1), quantidadeProduto));
+                        } else {
+                            System.out.println("\nProduto não encontrado.");
+                        }
+                    }
+
+                    if(status.equals(Status.FINALIZADO)) {
+                        negocio = new Negocio(status, produtosCompra, TipoNegocio.COMPRA);
+                    } else {
+                        negocio = new Negocio(status, produtosCompra, dataHoraLida, TipoNegocio.COMPRA);
+                    }
+
+                    empresa.registrarCompra(negocio);        
+                   
+                   break;
+
+                case 4:
+                    ArrayList<ItemNegocio> produtosVenda = new ArrayList<>();
+                    tipoNegocio = TipoNegocio.COMPRA;
+
+                    System.out.println("\nQual o status da compra?");
+                    System.out.println("1 - Em aberto");
+                    System.out.println("2 - Finalizada");
+
+                    opcao = Integer.parseInt(sc.nextLine());
+
+                    status = (opcao == 1 ? Status.ABERTO : Status.FINALIZADO);
+
+                    while (true) {
+                        System.out.println("\nEscolha o produto que deseja comprar: ");
+
+                        int contador = 1;
+
+
+                        for (Produto p : empresa.getAlmoxarifado().getProdutos()) {
+                            System.out.println(contador + " - " + p.exibirInformacoes());
+                            contador++;
+                        }
+
+                        System.out.println(contador + " - Sair.");
+
+                        int produto = Integer.parseInt(sc.nextLine());
+
+                        if (produto == contador) {
+                            break;
+                        }
+
+                        int quantidadeProduto = Integer.parseInt(sc.nextLine());
+
+                        if (produto >= 1 && produto <= empresa.getAlmoxarifado().getProdutos().size()) {
+                            produtosVenda.add(new ItemNegocio(empresa.getAlmoxarifado().getProdutos().get(produto - 1), quantidadeProduto));
+                        } else {
+                            System.out.println("\nProduto não encontrado.");
+                        }
+                    }
+
+                    negocio = new Negocio(status, produtosVenda, TipoNegocio.VENDA);
+                    empresa.registrarVenda(negocio);
                     break;
-                }
-
-                case 4: {
+                  
+                case 5:
                     break;
-                }
-
-                case 5: {
-                    break;
-                }
-
-                case 6: {
-
+                  
+                case 6:
                     System.out.println("Lista de produtos:\n");
-                    empresa.getCaixa().exibirProdutos();
+                    empresa.getAlmoxarifado().exibirProdutos();
                     break;
-                }
-
+                  
                 case 7: {
-
                     System.out.println("Lista de compras:\n");
                     empresa.getCaixa().exibirCompras();
                     break;
-                }
 
                 case 8: {
-
                     System.out.println("Lista de vendas:\n");
                     empresa.getCaixa().exibirVendas();
                     break;
-                }
 
                 case 9: {
-
                     System.out.println("Transportadoras:\n");
                     empresa.getTransportadoras().exibirTransportadora();
                     break;
-                }
 
                 case 10: {
-
                     System.out.println("Para verificar a estimativa mensal, digite o número referente ao mês desejado: (1 a 12)");
                     int mensal = Integer.parseInt(sc.nextLine());
 
@@ -153,28 +278,28 @@ public class Main {
 
                     System.out.printf("Valor total do caixa: R$%.2f\nEstimativa mensal: R$%.2f\nEstimativa anual: R$%.2f\n", empresa.getCaixa().getValorTotal(), empresa.getCaixa().estimarLucroMensal(mensal), empresa.getCaixa().estimarLucroAnual(anual));
                     break;
-                }
-
-                case 11: {
-
+                  
+                  case 11: {
                     System.out.println("Negócios em aberto:\n");
                     empresa.getCaixa().exibirNegociosAbertos();
                     break;
-                }
 
-                case 12: {
+                case 12:
+                    System.out.println("\nExibindo setores:");
+
+                    for (Setor setor : empresa.getSetores()) {
+                        System.out.println(setor.exibirSetor());
+                    }
+                    break;       
+
+                case 13:
                     sc.close();
                     return;
-                }
 
-                default: {
+                default:
                     System.out.println("Entrada inválida!");
                     break;
-                }
-
             }
-
         }
-
     }
 }

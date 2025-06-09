@@ -6,6 +6,9 @@ public class Setor {
     private String nome;
     private int qtdFuncionarios;
 
+    public Setor(String nome) {
+        this.nome = nome;
+    
     public Setor() {
         qtdFuncionariosTotal++;
     }
@@ -44,5 +47,10 @@ public class Setor {
 
     public void setQtdFuncionarios(int qtdFuncionarios) {
         this.qtdFuncionarios = qtdFuncionarios;
+    }
+
+    public String exibirSetor() {
+        return "\nNome do setor: " + nome + "\n" +
+                "Quantidade de funcionários:" + qtdFuncionarios + "\n";
     }
 }
