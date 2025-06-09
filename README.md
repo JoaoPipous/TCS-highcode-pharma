@@ -17,7 +17,7 @@ Este é um projeto desenvolvido como parte do BootCamp da TCS, turma High Code. 
 ## 👥 Colaboradores
 
 Este projeto foi desenvolvido em colaboração com:
-- [JoaoPipous](https://github.com/JoaoPipous
+- [JoaoPipous](https://github.com/JoaoPipous)
 - [Eduardoczi](https://github.com/Eduardoczi)  
 - [Guilherme-sitta](https://github.com/Guilherme-sitta)  
 - [Leandro Hideki (Leleco04)](https://github.com/Leleco04)  
