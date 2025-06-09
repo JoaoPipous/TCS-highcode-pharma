@@ -12,6 +12,11 @@ import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import exception.*;
+import model.Funcionario;
+import model.Produto;
+
+import java.time.Year;
 import java.util.Scanner;
 import java.util.ArrayList;
 
@@ -21,6 +26,7 @@ public class Main {
     static Negocio negocio;
     static DateTimeFormatter formatador = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
     public static void main(String[] args) {
+
         Scanner sc = new Scanner(System.in);
         Empresa empresa = new Empresa();
 
@@ -35,6 +41,11 @@ public class Main {
         }
 
         // *** TESTES ***
+
+        Scanner sc = new Scanner(System.in);
+        Empresa empresa = new Empresa();
+
+        empresa.getCaixa().exibirProdutos();
 
         while (true) {
 
@@ -59,10 +70,72 @@ public class Main {
             int opcao = Integer.parseInt(sc.nextLine());
 
             switch (opcao) {
-                case 1:
-                    break;
+                case 1: {
 
-                case 2:
+                    System.out.println("Digite o nome do funcionário:");
+                    String nomeFuncionario = sc.nextLine();
+
+                    System.out.println("Digite o sobrenome do funcionário:");
+                    String sobrenomeFuncionario = sc.nextLine();
+
+                    /* try {
+                        System.out.println("Digite o código único do funcionário:");
+                        String codigoFuncionario = sc.nextLine();
+                    } catch(CodigoUnicoExistenteException e) {
+                        System.out.println(e.getMessage());
+                    } */
+
+                    System.out.println("Digite a idade do funcionário:");
+                    int idadeFuncionario = Integer.parseInt(sc.nextLine());
+
+                    System.out.println(empresa.exibirGeneros());
+                    System.out.println("Digite o número do gênero correspondente do funcionário:");
+                    int numGenero = Integer.parseInt(sc.nextLine());
+
+                    System.out.println(empresa.exibirSetores());
+                    System.out.println("Digite o número do setor correspondente do funcionário:");
+                    int numSetor = Integer.parseInt(sc.nextLine());
+
+                    try {
+                       Funcionario funcionario = new Funcionario(nomeFuncionario, sobrenomeFuncionario, codigoFuncionario, idadeFuncionario, numGenero, numSetor);
+                        empresa.addFuncionario(funcionario);
+                        System.out.println("Funcionário adicionado com sucesso!");
+                    } catch (GeneroInvalidoException e) {
+                        System.out.println(e.getMessage());
+                    } catch (SetorInvalidoException e) {
+                        System.out.println(e.getMessage());
+                    } catch (QuantidadeLimiteFuncionariosException e) {
+                        System.out.println(e.getMessage());
+                    }
+
+                    break;
+                  
+                 case 2: {
+
+                    System.out.println("Digite o nome do produto:");
+                    String nomeProduto = sc.nextLine();
+
+                    System.out.println("Digite o valor de compra do produto:");
+                    double valorCompra = Double.parseDouble(sc.nextLine());
+
+                    System.out.println("Digite o valor de venda do produto:");
+                    double valorVenda = Double.parseDouble(sc.nextLine());
+
+                    System.out.println("Digite a quantidade em estoque atual do produto:");
+                    int qtdEstoque = Integer.parseInt(sc.nextLine());
+
+                    System.out.println("Escolha a categoria do produto:");
+                    System.out.println("1- Medicamento  2- Higiene  3- Cosmético  4- Alimentício");
+                    int categoria = Integer.parseInt(sc.nextLine());
+
+                    try {
+                        Produto produto = new Produto(nomeProduto, valorCompra, valorVenda, qtdEstoque, categoria);
+                        empresa.getCaixa().adicionarProduto(produto);
+                        System.out.println("Produto adicionado com sucesso!");
+                    } catch(CategoriaInvalidaException e) {
+                        System.out.println(e.getMessage());
+                    }
+
                     break;
 
                 case 3:
@@ -86,7 +159,7 @@ public class Main {
                                 dataHoraLida = LocalDateTime.parse(data, formatador);
                                 break;
                             } catch (DateTimeParseException e) {
-                                System.out.println("\n❌ Erro: O formato digitado está incorreto. Por favor, use o formato dd/MM/yyyy HH:mm.");
+                                System.out.println("\nErro: O formato digitado está incorreto. Por favor, use o formato dd/MM/yyyy HH:mm.");
                             }
                         }
                     }
@@ -125,8 +198,9 @@ public class Main {
                         negocio = new Negocio(status, produtosCompra, dataHoraLida, TipoNegocio.COMPRA);
                     }
 
-                    empresa.registrarCompra(negocio);
-                    break;
+                    empresa.registrarCompra(negocio);        
+                   
+                   break;
 
                 case 4:
                     ArrayList<ItemNegocio> produtosVenda = new ArrayList<>();
@@ -171,27 +245,43 @@ public class Main {
                     negocio = new Negocio(status, produtosVenda, TipoNegocio.VENDA);
                     empresa.registrarVenda(negocio);
                     break;
-
+                  
                 case 5:
                     break;
-
+                  
                 case 6:
+                    System.out.println("Lista de produtos:\n");
                     empresa.getAlmoxarifado().exibirProdutos();
                     break;
-
-                case 7:
+                  
+                case 7: {
+                    System.out.println("Lista de compras:\n");
+                    empresa.getCaixa().exibirCompras();
                     break;
 
-                case 8:
+                case 8: {
+                    System.out.println("Lista de vendas:\n");
+                    empresa.getCaixa().exibirVendas();
                     break;
 
-                case 9:
+                case 9: {
+                    System.out.println("Transportadoras:\n");
+                    empresa.getTransportadoras().exibirTransportadora();
                     break;
 
-                case 10:
-                    break;
+                case 10: {
+                    System.out.println("Para verificar a estimativa mensal, digite o número referente ao mês desejado: (1 a 12)");
+                    int mensal = Integer.parseInt(sc.nextLine());
 
-                case 11:
+                    System.out.println("Para verificar a estimativa anual, digite o ano desejado:");
+                    int anual = Integer.parseInt(sc.nextLine());
+
+                    System.out.printf("Valor total do caixa: R$%.2f\nEstimativa mensal: R$%.2f\nEstimativa anual: R$%.2f\n", empresa.getCaixa().getValorTotal(), empresa.getCaixa().estimarLucroMensal(mensal), empresa.getCaixa().estimarLucroAnual(anual));
+                    break;
+                  
+                  case 11: {
+                    System.out.println("Negócios em aberto:\n");
+                    empresa.getCaixa().exibirNegociosAbertos();
                     break;
 
                 case 12:
@@ -200,7 +290,7 @@ public class Main {
                     for (Setor setor : empresa.getSetores()) {
                         System.out.println(setor.exibirSetor());
                     }
-                    break;
+                    break;       
 
                 case 13:
                     sc.close();

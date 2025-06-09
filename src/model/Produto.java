@@ -9,12 +9,17 @@ public class Produto {
     private int qtdEstoque;
     private Categoria categoria;
 
-    public Produto(String nome, double valorCompra, double valorVenda, int qtdEstoque, Categoria categoria) {
+    public Produto(String nome, double valorCompra, double valorVenda, int qtdEstoque, int categoria) throws exception.CategoriaInvalidaException {
         this.nome = nome;
         this.valorCompra = valorCompra;
         this.valorVenda = valorVenda;
         this.qtdEstoque = qtdEstoque;
-        this.categoria = categoria;
+
+        if(definirCategoria(categoria) == null) {
+            throw new exception.CategoriaInvalidaException("Entrada inválida: categoria não encontrada.");
+        } else {
+            this.categoria = definirCategoria(categoria);
+        }
     }
 
     public Produto() {}
@@ -32,6 +37,16 @@ public class Produto {
 
     public void removeEstoque(int quantidade) {
         this.qtdEstoque -= quantidade;
+    }
+      
+    public Categoria definirCategoria(int categoria){
+        switch (categoria) {
+            case 1: return Categoria.MEDICAMENTO;
+            case 2: return Categoria.HIGIENE;
+            case 3: return Categoria.COSMETICO;
+            case 4: return Categoria.ALIMENTICIO;
+        }
+        return null;
     }
 
     public String getNome() {
@@ -73,5 +88,4 @@ public class Produto {
     public void setCategoria(Categoria categoria) {
         this.categoria = categoria;
     }
-
 }

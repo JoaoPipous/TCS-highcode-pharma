@@ -1,12 +1,6 @@
 package setor;
 
-import enumeracao.Categoria;
-import exception.ProdutoNaoEncontradoException;
 import exception.QuantidadeLimiteFuncionariosException;
-import model.Produto;
-
-import java.util.ArrayList;
-import java.util.Random;
 
 public class Almoxarifado extends Setor {
 
@@ -17,12 +11,14 @@ public class Almoxarifado extends Setor {
 
     public Almoxarifado(String nome) throws QuantidadeLimiteFuncionariosException {
         super(nome);
-        setQtdLimite(3);
+        super.setNome("Almoxarifado");
+        super.setQtdFuncionarios(3);
 
-        if(contador > getQtdLimite()){
-            throw new QuantidadeLimiteFuncionariosException("Quantidade excedeu limite de funcionarios");
+        if(getContador() > getQtdFuncionarios()){
+            throw new QuantidadeLimiteFuncionariosException("Quantidade excedeu o limite de funcionários.");
         }
-        contador++;
+
+        setContador(getContador() + 1);
     }
 
     // Cria 10 produtos iniciais com nome de um array
@@ -47,22 +43,7 @@ public class Almoxarifado extends Setor {
         throw new ProdutoNaoEncontradoException("Produto " + produto.getNome() + " não encontrado.");
     }
 
-    // Percorre a lista de produtos exibindo cada produto
-    public void exibirProdutos() {
-        for(Produto p : produtos) {
-            System.out.println(p.exibirInformacoes());
-        }
-    }
-
-    // Retorna todos os produtos
-    public ArrayList<Produto> getProdutos() {
-        return produtos;
-    }
-
-    public void addProduto(Produto produto) {
-        produtos.add(produto);
-    }
-
+    // Verifica se o produto buscado existe
     public void verificarProduto(Produto produto) throws ProdutoNaoEncontradoException{
         for(Produto p : produtos) {
             if(p.equals(produto)) {

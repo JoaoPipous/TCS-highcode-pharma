@@ -1,7 +1,11 @@
 package model;
 
 import enumeracao.Genero;
-import setor.Setor;
+import exception.CodigoUnicoExistenteException;
+import exception.GeneroInvalidoException;
+import exception.QuantidadeLimiteFuncionariosException;
+import exception.SetorInvalidoException;
+import setor.*;
 
 public class Funcionario {
     private String nome;
@@ -13,14 +17,50 @@ public class Funcionario {
     private Setor setor;
     private int qtdVendas;
 
-    public Funcionario(String nome, String sobrenome, String codigoFuncionario, int idade, Genero genero, Setor setor) {
+    public Funcionario(String nome, String sobrenome, String codigoFuncionario, int idade, int genero, int setor) throws GeneroInvalidoException, SetorInvalidoException, QuantidadeLimiteFuncionariosException, CodigoUnicoExistenteException {
         this.nome = nome;
         this.sobrenome = sobrenome;
         this.codigoFuncionario = codigoFuncionario;
         this.idade = idade;
-        this.genero = genero;
-        this.setor = setor;
-        this.qtdVendas = qtdVendas;
+
+        if(definirGenero(genero) == null) {
+            throw new exception.GeneroInvalidoException("Entrada inválida: gênero não encontrado.");
+        } else {
+            this.genero = definirGenero(genero);
+        }
+
+        if(definirSetor(setor) == null) {
+            throw new exception.SetorInvalidoException("Entrada inválida: setor não encontrado.");
+        } else {
+            this.setor = definirSetor(setor);
+        }
+
+        this.qtdVendas = 0;
+    }
+
+    public Genero definirGenero(int genero) {
+        switch (genero) {
+            case 1: return Genero.MASCULINO;
+            case 2: return Genero.FEMININO;
+        }
+
+        return null;
+    }
+
+    public Setor definirSetor(int setor) throws QuantidadeLimiteFuncionariosException {
+        try {
+            switch (setor) {
+                case 1: return new GerenteFilial();
+                case 2: return new AtendimentoCliente();
+                case 3: return new GestaoPessoas();
+                case 4: return new Financeiro();
+                case 5: return new Vendas();
+                case 6: return new Almoxarifado();
+            } return null;
+        } catch (QuantidadeLimiteFuncionariosException e) {
+            System.out.println(e.getMessage());
+        }
+        return null;
     }
 
     public String getNome() {

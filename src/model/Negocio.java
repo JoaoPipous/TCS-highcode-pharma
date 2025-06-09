@@ -100,6 +100,14 @@ public class Negocio {
     }
 
     public String exibirDados() {
-        return "";
+
+        StringBuilder sb = new StringBuilder();
+        sb.append(tipo.toString() + " - Funcionários envolvidos:\n");
+
+        for(String funcionario : funcionariosEnvolvidosToString()) {
+            sb.append(funcionario + "\n");
+        }
+
+        return sb.toString();
     }
 }

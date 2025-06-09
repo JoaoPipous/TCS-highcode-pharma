@@ -46,7 +46,6 @@ public class Transportadora {
 
     public Transportadora() {
         qtdParceiras = 3;
-        this.valorFrete = valorFrete;
     }
 
     public void calcularFrete(String transportadoraEscolhida, double toneladas){
@@ -70,7 +69,7 @@ public class Transportadora {
         System.out.println("Possuimos: " + qtdParceiras + " Transportadoras" );
         System.out.println("Cidades disponiveis:");
         for(Local local: Local.values()){
-            System.out.println(local.getCidadeTransportadora());
+            System.out.print(local.getCidadeTransportadora() + " ");
         }
     }
 }
