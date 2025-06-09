@@ -80,6 +80,17 @@ public class Empresa {
         return sb.toString();
     }
 
+    public void exibirFuncionarios() {
+        if (funcionarios.isEmpty()) {
+            System.out.println("Não há funcionários cadastrados.");
+        } else {
+            for (Funcionario funcionario : funcionarios) {
+                System.out.println(funcionario);
+            }
+        }
+    }
+
+
     public Caixa getCaixa() {
         return caixa;
     }
