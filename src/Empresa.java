@@ -23,9 +23,9 @@ public class Empresa {
         this.caixa = new Caixa(200000);
         this.transportadoras = new Transportadora();
         try {
-            this.almoxarifado = new Almoxarifado("Almoxarifado");
+            this.almoxarifado = new Almoxarifado();
         } catch(QuantidadeLimiteFuncionariosException e) {
-            e.printStackTrace();
+            System.out.println("\n" + e.getMessage());
         }
         setores = new ArrayList<>();
     }
@@ -40,6 +40,10 @@ public class Empresa {
                 throw new CodigoUnicoExistenteException("Código único já existente. Insira outro código único.");
             }
         }
+    }
+
+    public ArrayList<Setor> getSetores() {
+        return setores;
     }
 
     public String exibirGeneros() {
@@ -64,6 +68,10 @@ public class Empresa {
         for(ItemNegocio item : venda.getProdutos()) {
             item.getProduto().removeEstoque(item.getQtd());
         }
+    }
+
+    public Almoxarifado getAlmoxarifado() {
+        return almoxarifado;
     }
   
     public String exibirSetores() {
