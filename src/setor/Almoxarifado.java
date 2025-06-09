@@ -3,13 +3,13 @@ package setor;
 import enumeracao.Categoria;
 import exception.CategoriaInvalidaException;
 import exception.ProdutoNaoEncontradoException;
+import exception.QuantidadeLimiteFuncionariosException;
 import model.Produto;
 
 import java.util.ArrayList;
 import java.util.Random;
 
 public class Almoxarifado extends Setor {
-
     static Random gerador = new Random();
     private static ArrayList<Produto> produtos;
     private static ArrayList<Produto> produtosIniciais;

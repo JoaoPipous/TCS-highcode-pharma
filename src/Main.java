@@ -34,10 +34,6 @@ public class Main {
         Scanner sc = new Scanner(System.in);
         Empresa empresa = new Empresa();
 
-        // *** TESTES ***
-
-        // *** TESTES ***
-
         for(Setor s : empresa.getSetores()) {
             if(s instanceof Almoxarifado) {
                 ((Almoxarifado) s).exibirProdutos();
@@ -68,7 +64,7 @@ public class Main {
             int opcao = Integer.parseInt(sc.nextLine());
 
             switch (opcao) {
-                case 1: {
+                case 1:
 
                     System.out.println("Digite o nome do funcionário:");
                     String nomeFuncionario = sc.nextLine();
@@ -95,28 +91,38 @@ public class Main {
                     System.out.println("Digite o número do setor correspondente do funcionário:");
                     int numSetor = Integer.parseInt(sc.nextLine());
 
+//                    try {
+//                        Funcionario funcionario = new Funcionario(nomeFuncionario, sobrenomeFuncionario, codigoFuncionario, idadeFuncionario, numGenero, numSetor);
+//                        empresa.addFuncionario(funcionario);
+//                        System.out.println("Funcionário adicionado com sucesso!");
+//                    } catch (GeneroInvalidoException e) {
+//                        System.out.println(e.getMessage());
+//                    } catch (SetorInvalidoException e) {
+//                        System.out.println(e.getMessage());
+//                    } catch (QuantidadeLimiteFuncionariosException e) {
+//                        System.out.println(e.getMessage());
+//                    }
+
                     try {
                         Setor setorDefinido = empresa.definirSetor(numSetor);
                         Funcionario funcionario = new Funcionario(nomeFuncionario, sobrenomeFuncionario, codigoFuncionario, idadeFuncionario, numGenero, setorDefinido);
+                        //empresa.validarCodigoUnicoFuncionario(codigoFuncionario);
+                        //Funcionario funcionario = new Funcionario(nomeFuncionario, sobrenomeFuncionario, codigoFuncionario, idadeFuncionario, numGenero, numSetor);
                         empresa.addFuncionario(funcionario);
                         System.out.println("Funcionário adicionado com sucesso!");
-                    } catch (GeneroInvalidoException e) {
+                    } catch (CodigoUnicoExistenteException e) {
                         System.out.println(e.getMessage());
-                    } catch (SetorInvalidoException e) {
-                        System.out.println(e.getMessage());
-                    } catch (QuantidadeLimiteFuncionariosException e) {
+                    } catch (GeneroInvalidoException | SetorInvalidoException | QuantidadeLimiteFuncionariosException e) {
                         System.out.println(e.getMessage());
                     } catch (CodigoUnicoExistenteException e) {
                         System.out.println(e.getMessage());
                     } catch (IllegalArgumentException e) {
                         System.out.println(e.getMessage());
                     }
-
                     break;
                 }
-
-                case 2:
-
+          
+                 case 2:
                     System.out.println("Digite o nome do produto:");
                     String nomeProduto = sc.nextLine();
 
@@ -141,11 +147,11 @@ public class Main {
                                 break;
                             }
                         }
+                        empresa.getAlmoxarifado().adicionarProduto(produto);
                         System.out.println("Produto adicionado com sucesso!");
                     } catch (CategoriaInvalidaException e) {
                         System.out.println(e.getMessage());
                     }
-
                     break;
 
                 case 3:
@@ -346,7 +352,7 @@ public class Main {
                         }
                     }
                     break;
-
+          
                 case 7:
                     System.out.println("Lista de compras:\n");
                     empresa.getCaixa().exibirCompras();
@@ -371,8 +377,8 @@ public class Main {
 
                     System.out.printf("Valor total do caixa: R$%.2f\nEstimativa mensal: R$%.2f\nEstimativa anual: R$%.2f\n", empresa.getCaixa().getValorTotal(), empresa.getCaixa().estimarLucroMensal(mensal), empresa.getCaixa().estimarLucroAnual(anual));
                     break;
-
-                case 11:
+                  
+                  case 11:
                     System.out.println("Negócios em aberto:\n");
                     empresa.getCaixa().exibirNegociosAbertos();
                     break;

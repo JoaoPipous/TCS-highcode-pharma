@@ -1,12 +1,13 @@
-import model.Caixa;
+import exception.EstoqueInsuficienteException;
+import model.*;
 import exception.QuantidadeLimiteFuncionariosException;
 import model.ItemNegocio;
 import model.Negocio;
 import setor.*;
+import setor.Almoxarifado;
+import setor.Setor;
 import exception.CodigoUnicoExistenteException;
 import model.Caixa;
-import model.Funcionario;
-import model.Transportadora;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +35,10 @@ public class Empresa {
                 throw new CodigoUnicoExistenteException("Código único já existente. Insira outro código único.");
             }
         }
+    }
+
+    public ArrayList<Setor> getSetores() {
+        return setores;
     }
 
     public String exibirGeneros() {
@@ -139,11 +144,34 @@ public class Empresa {
         }
     }
 
-    public void registrarVenda(Negocio venda) {
-        caixa.registrarVenda(venda);
-        for(ItemNegocio item : venda.getProdutos()) {
-            item.getProduto().removeEstoque(item.getQtd());
+    public void registrarVenda(Negocio venda) throws EstoqueInsuficienteException {
+        // --- INÍCIO DA VALIDAÇÃO ---
+        // 1. Loop para VERIFICAR o estoque de todos os produtos ANTES de fazer qualquer alteração.
+        for (ItemNegocio item : venda.getProdutos()) {
+            Produto produtoNoEstoque = item.getProduto();
+            int quantidadeDesejada = item.getQtd();
+
+            if (produtoNoEstoque.getQtdEstoque() < quantidadeDesejada) {
+                // 2. Se um item não tiver estoque, lança um erro e interrompe a operação.
+                throw new EstoqueInsuficienteException(
+                        "Estoque insuficiente para o produto: " + produtoNoEstoque.getNome() +
+                                ". Disponível: " + produtoNoEstoque.getQtdEstoque() + ", Desejado: " + quantidadeDesejada
+                );
+            }
         }
+        // --- FIM DA VALIDAÇÃO ---
+
+        // 3. Se todos os produtos tiverem estoque, a execução continua normalmente.
+        // O código abaixo só será executado se a validação passar.
+        caixa.registrarVenda(venda);
+
+        for (ItemNegocio item : venda.getProdutos()) {
+            item.getProduto().removeEstoque(item.getQtd()); // Agora essa operação é segura
+        }
+    }
+
+    public Almoxarifado getAlmoxarifado() {
+        return almoxarifado;
     }
   
     public String exibirSetores() {
@@ -157,6 +185,16 @@ public class Empresa {
         sb.append("\n");
 
         return sb.toString();
+    }
+
+    public void exibirFuncionarios() {
+        if (funcionarios.isEmpty()) {
+            System.out.println("Não há funcionários cadastrados.");
+        } else {
+            for (Funcionario funcionario : funcionarios) {
+                System.out.println(funcionario);
+            }
+        }
     }
 
     public Caixa getCaixa() {

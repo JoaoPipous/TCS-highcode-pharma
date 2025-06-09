@@ -5,7 +5,7 @@ public class Setor {
     private int contador = 0;
     private String nome;
     private int qtdFuncionarios = 0;
-    
+  
     public Setor() {}
 
     public void addQtdFuncionario() {
