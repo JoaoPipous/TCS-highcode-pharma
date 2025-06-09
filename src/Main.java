@@ -2,7 +2,6 @@ import exception.*;
 import model.Funcionario;
 import model.Produto;
 
-import java.time.Year;
 import java.util.Scanner;
 
 public class Main {
@@ -13,7 +12,7 @@ public class Main {
 
         empresa.getCaixa().exibirProdutos();
 
-        while(true) {
+        while (true) {
 
             System.out.println("Escolha uma opção:");
             System.out.println("1 - Adicionar funcionário");
@@ -34,19 +33,14 @@ public class Main {
             switch (opcao) {
 
                 case 1: {
-
                     System.out.println("Digite o nome do funcionário:");
                     String nomeFuncionario = sc.nextLine();
 
                     System.out.println("Digite o sobrenome do funcionário:");
                     String sobrenomeFuncionario = sc.nextLine();
 
-                    /*try {
-                        System.out.println("Digite o código único do funcionário:");
-                        String codigoFuncionario = sc.nextLine();
-                    } catch(CodigoUnicoExistenteException e) {
-                        System.out.println(e.getMessage());
-                    } */
+                    System.out.println("Digite o código único do funcionário:");
+                    String codigoFuncionario = sc.nextLine();
 
                     System.out.println("Digite a idade do funcionário:");
                     int idadeFuncionario = Integer.parseInt(sc.nextLine());
@@ -60,14 +54,13 @@ public class Main {
                     int numSetor = Integer.parseInt(sc.nextLine());
 
                     try {
-                       Funcionario funcionario = new Funcionario(nomeFuncionario, sobrenomeFuncionario, codigoFuncionario, idadeFuncionario, numGenero, numSetor);
+                        empresa.validarCodigoUnicoFuncionario(codigoFuncionario);
+                        Funcionario funcionario = new Funcionario(nomeFuncionario, sobrenomeFuncionario, codigoFuncionario, idadeFuncionario, numGenero, numSetor);
                         empresa.addFuncionario(funcionario);
                         System.out.println("Funcionário adicionado com sucesso!");
-                    } catch (GeneroInvalidoException e) {
+                    } catch (CodigoUnicoExistenteException e) {
                         System.out.println(e.getMessage());
-                    } catch (SetorInvalidoException e) {
-                        System.out.println(e.getMessage());
-                    } catch (QuantidadeLimiteFuncionariosException e) {
+                    } catch (GeneroInvalidoException | SetorInvalidoException | QuantidadeLimiteFuncionariosException e) {
                         System.out.println(e.getMessage());
                     }
 
@@ -75,7 +68,6 @@ public class Main {
                 }
 
                 case 2: {
-
                     System.out.println("Digite o nome do produto:");
                     String nomeProduto = sc.nextLine();
 
@@ -96,7 +88,7 @@ public class Main {
                         Produto produto = new Produto(nomeProduto, valorCompra, valorVenda, qtdEstoque, categoria);
                         empresa.getCaixa().adicionarProduto(produto);
                         System.out.println("Produto adicionado com sucesso!");
-                    } catch(CategoriaInvalidaException e) {
+                    } catch (CategoriaInvalidaException e) {
                         System.out.println(e.getMessage());
                     }
 
@@ -112,51 +104,52 @@ public class Main {
                 }
 
                 case 5: {
+                    System.out.println("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
+                    System.out.println("Lista de Funcionários:");
+                    empresa.exibirFuncionarios();
+                    System.out.println("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
                     break;
                 }
 
                 case 6: {
-
                     System.out.println("Lista de produtos:\n");
                     empresa.getCaixa().exibirProdutos();
                     break;
                 }
 
                 case 7: {
-
                     System.out.println("Lista de compras:\n");
                     empresa.getCaixa().exibirCompras();
                     break;
                 }
 
                 case 8: {
-
                     System.out.println("Lista de vendas:\n");
                     empresa.getCaixa().exibirVendas();
                     break;
                 }
 
                 case 9: {
-
                     System.out.println("Transportadoras:\n");
                     empresa.getTransportadoras().exibirTransportadora();
                     break;
                 }
 
                 case 10: {
-
                     System.out.println("Para verificar a estimativa mensal, digite o número referente ao mês desejado: (1 a 12)");
                     int mensal = Integer.parseInt(sc.nextLine());
 
                     System.out.println("Para verificar a estimativa anual, digite o ano desejado:");
                     int anual = Integer.parseInt(sc.nextLine());
 
-                    System.out.printf("Valor total do caixa: R$%.2f\nEstimativa mensal: R$%.2f\nEstimativa anual: R$%.2f\n", empresa.getCaixa().getValorTotal(), empresa.getCaixa().estimarLucroMensal(mensal), empresa.getCaixa().estimarLucroAnual(anual));
+                    System.out.printf("Valor total do caixa: R$%.2f\nEstimativa mensal: R$%.2f\nEstimativa anual: R$%.2f\n",
+                            empresa.getCaixa().getValorTotal(),
+                            empresa.getCaixa().estimarLucroMensal(mensal),
+                            empresa.getCaixa().estimarLucroAnual(anual));
                     break;
                 }
 
                 case 11: {
-
                     System.out.println("Negócios em aberto:\n");
                     empresa.getCaixa().exibirNegociosAbertos();
                     break;
@@ -171,10 +164,7 @@ public class Main {
                     System.out.println("Entrada inválida!");
                     break;
                 }
-
             }
-
         }
-
     }
 }
