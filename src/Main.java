@@ -23,6 +23,7 @@ import java.util.Scanner;
 import java.util.ArrayList;
 
 public class Main {
+    static LocalDateTime dataHoraLida = LocalDateTime.now();
     static TipoNegocio tipoNegocio;
     static Status status;
     static Negocio negocio;
@@ -67,7 +68,6 @@ public class Main {
             int opcao = Integer.parseInt(sc.nextLine());
 
             switch (opcao) {
-
                 case 1: {
 
                     System.out.println("Digite o nome do funcionário:");
@@ -151,7 +151,6 @@ public class Main {
                 case 3:
                     ArrayList<ItemNegocio> produtosCompra = new ArrayList<>();
                     tipoNegocio = TipoNegocio.COMPRA;
-                    LocalDateTime dataHoraLida = LocalDateTime.now();
 
                     System.out.println("\nQual o status da compra?");
                     System.out.println("1 - Em aberto");
@@ -159,76 +158,91 @@ public class Main {
 
                     opcao = Integer.parseInt(sc.nextLine());
 
+                    // Ternária - caso opção for = 1 o status é ABERTO
+                    // Caso contrário é FINALIZADO
                     status = (opcao == 1 ? Status.ABERTO : Status.FINALIZADO);
 
-                    while (true) {
-                        if (status.equals(Status.ABERTO)) {
+                    // Fica em loop (pedindo a data) até a verificação estar satisfeita
+                    while(true) {
+                        // Se o status for ABERTO, pede a data de finalização do negócio
+                        if(status.equals(Status.ABERTO)) {
                             System.out.println("\nInsira a data de finalização da compra, formato: dd/MM/yyyy hh:mm:ss");
+                            // Faz 2 verificação com try catch
+                            // A primeira se a data digitada está no formato certo dd/MM/yyyy HH:MM/ss
+                            // (Dia/mês/ano Hora/minutos/segundos)
+                            // A segunda verifica se a data é válida, deve ser após a data atual
                             try {
                                 String data = sc.nextLine();
                                 dataHoraLida = LocalDateTime.parse(data, formatador);
+                                if(dataHoraLida.isBefore(LocalDateTime.now())) {
+                                    throw new DataValidaException("\nA data de finalização deve ser após a data atual.");
+                                }
                                 break;
                             } catch (DateTimeParseException e) {
                                 System.out.println("\nErro: O formato digitado está incorreto. Por favor, use o formato dd/MM/yyyy HH:mm.");
+                            } catch (DataValidaException e) {
+                                System.out.println("\n" + e.getMessage());
                             }
                         } else {
                             break;
                         }
                     }
 
+                    // Loop até o usuário escolher sair
                     while (true) {
-                        System.out.println("\nEscolha o produto que deseja comprar: \n");
+                        System.out.println("\nEscolha o(s) produto da compra: \n");
 
                         int contador = 1;
 
-                        for(Setor s : empresa.getSetores()) {
-                            if(s instanceof Almoxarifado) {
-                                for (Produto p : ((Almoxarifado) s).getProdutos()) {
-                                    System.out.println(contador + " - " + p.exibirInformacoes());
-                                    contador++;
-                                }
-                                break;
-                            }
+                        // Exibe todos os produtos do Almoxarifado (estoque)
+                        for (Produto p : empresa.getAlmoxarifado().getProdutos()) {
+                            System.out.println(contador + " - " + p.exibirInformacoes());
+                            contador++;
                         }
 
                         System.out.println(contador + " - Sair.");
 
                         int produto = Integer.parseInt(sc.nextLine());
 
+                        // Se a opção for igual o contador ele sai do loop
+                        // No final da exibição, o contador é igual a opção de sair
                         if (produto == contador) {
                             break;
                         }
 
-                        System.out.println("\nInforme a quantidade que deseja comprar: ");
+                        System.out.println("\nInforme a quantidade: ");
                         int quantidadeProduto = Integer.parseInt(sc.nextLine());
 
-                        for(Setor s : empresa.getSetores()) {
-                            if(s instanceof Almoxarifado) {
-                                if (produto >= 1 && produto <= ((Almoxarifado) s).getProdutos().size()) {
-                                    produtosCompra.add(new ItemNegocio(((Almoxarifado) s).getProdutos().get(produto - 1), quantidadeProduto));
-                                } else {
-                                    System.out.println("\nProduto não encontrado.");
-                                }
-                                break;
+                        // Verifica se o produto existe
+                        // O índice deve ser maior que 1 (pois a exibição de escolha começa em 1)
+                        // E o índice deve ser menor ou igual que o tamanho da lista de produtos
+                        try {
+                            if (produto >= 1 && produto <= empresa.getAlmoxarifado().getProdutos().size()) {
+                                produtosCompra.add(new ItemNegocio(empresa.getAlmoxarifado().getProdutos().get(produto - 1), quantidadeProduto));
+                            } else {
+                                throw new ProdutoNaoEncontradoException("\nProduto não encontrado.");
                             }
+                        } catch(ProdutoNaoEncontradoException e) {
+                            System.out.println(e.getMessage());
                         }
                     }
 
-                    if (status.equals(Status.FINALIZADO)) {
+                    // Adiciona um negócio ao Caixa dependendo do status
+                    if(status.equals(Status.FINALIZADO)) {
                         negocio = new Negocio(status, produtosCompra, TipoNegocio.COMPRA);
                     } else {
                         negocio = new Negocio(status, produtosCompra, dataHoraLida, TipoNegocio.COMPRA);
                     }
 
-                    empresa.registrarCompra(negocio);
-
-                    break;
+                    empresa.registrarCompra(negocio);        
+                   
+                   break;
 
                 case 4:
                     ArrayList<ItemNegocio> produtosVenda = new ArrayList<>();
                     tipoNegocio = TipoNegocio.COMPRA;
 
-                    System.out.println("\nQual o status da compra?");
+                    System.out.println("\nQual o status da venda?");
                     System.out.println("1 - Em aberto");
                     System.out.println("2 - Finalizada");
 
@@ -236,48 +250,91 @@ public class Main {
 
                     status = (opcao == 1 ? Status.ABERTO : Status.FINALIZADO);
 
+                    // Fica em loop (pedindo a data) até a verificação estar satisfeita
+                    while(true) {
+                        // Se o status for ABERTO, pede a data de finalização do negócio
+                        if(status.equals(Status.ABERTO)) {
+                            System.out.println("\nInsira a data de finalização da venda, formato: dd/MM/yyyy hh:mm:ss");
+                            // Faz 2 verificação com try catch
+                            // A primeira se a data digitada está no formato certo dd/MM/yyyy HH:MM/ss
+                            // (Dia/mês/ano Hora/minutos/segundos)
+                            // A segunda verifica se a data é válida, deve ser após a data atual
+                            try {
+                                String data = sc.nextLine();
+                                dataHoraLida = LocalDateTime.parse(data, formatador);
+                                if(dataHoraLida.isBefore(LocalDateTime.now())) {
+                                    throw new DataValidaException("\nA data de finalização deve ser após a data atual.");
+                                }
+                                break;
+                            } catch (DateTimeParseException e) {
+                                System.out.println("\nErro: O formato digitado está incorreto. Por favor, use o formato dd/MM/yyyy HH:mm.");
+                            } catch (DataValidaException e) {
+                                System.out.println("\n" + e.getMessage());
+                            }
+                        } else {
+                            break;
+                        }
+                    }
+
+                    // Loop até o usuário escolher sair
                     while (true) {
-                        System.out.println("\nEscolha o produto que deseja comprar: ");
+                        System.out.println("\nEscolha o produto da venda: \n");
 
                         int contador = 1;
 
-                        for(Setor s : empresa.getSetores()) {
-                            if(s instanceof Almoxarifado) {
-                                for (Produto p : ((Almoxarifado) s).getProdutos()) {
-                                    System.out.println(contador + " - " + p.exibirInformacoes());
-                                    contador++;
-                                }
-                                break;
-                            }
+                        // Exibe todos os produtos do Almoxarifado (estoque)
+                        for (Produto p : empresa.getAlmoxarifado().getProdutos()) {
+                            System.out.println(contador + " - " + p.exibirInformacoes());
+                            contador++;
                         }
 
                         System.out.println(contador + " - Sair.");
 
                         int produto = Integer.parseInt(sc.nextLine());
 
+                        // Se a opção for igual o contador ele sai do loop
+                        // No final da exibição, o contador é igual a opção de sair
                         if (produto == contador) {
                             break;
                         }
 
+                        System.out.println("\nInforme a quantidade: ");
                         int quantidadeProduto = Integer.parseInt(sc.nextLine());
 
-                        for(Setor s : empresa.getSetores()) {
-                            if(s instanceof Almoxarifado) {
-                                if (produto >= 1 && produto <= ((Almoxarifado) s).getProdutos().size()) {
-                                    produtosVenda.add(new ItemNegocio(((Almoxarifado) s).getProdutos().get(produto - 1), quantidadeProduto));
-                                } else {
-                                    System.out.println("\nProduto não encontrado.");
-                                }
-                                break;
+                        // Verifica se o produto existe
+                        // O índice deve ser maior que 1 (pois a exibição de escolha começa em 1)
+                        // E o índice deve ser menor ou igual que o tamanho da lista de produtos
+                        try {
+                            if (produto >= 1 && produto <= empresa.getAlmoxarifado().getProdutos().size()) {
+                                produtosVenda.add(new ItemNegocio(empresa.getAlmoxarifado().getProdutos().get(produto - 1), quantidadeProduto));
+                            } else {
+                                throw new ProdutoNaoEncontradoException("\nProduto não encontrado.");
                             }
+                        } catch(ProdutoNaoEncontradoException e) {
+                            System.out.println(e.getMessage());
                         }
                     }
 
-                    negocio = new Negocio(status, produtosVenda, TipoNegocio.VENDA);
-                    empresa.registrarVenda(negocio);
+                    // Adiciona um negócio ao Caixa dependendo do status
+                    if(status.equals(Status.FINALIZADO)) {
+                        negocio = new Negocio(status, produtosVenda, TipoNegocio.VENDA);
+                    } else {
+                        negocio = new Negocio(status, produtosVenda, dataHoraLida, TipoNegocio.VENDA);
+                    }
+
+                    try {
+                        empresa.registrarVenda(negocio);
+                    } catch(EstoqueInsuficienteException e) {
+                        System.out.println("\n" + e.getMessage());
+                    }
+
                     break;
 
                 case 5:
+                    System.out.println("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
+                    System.out.println("Lista de Funcionários:");
+                    empresa.exibirFuncionarios();
+                    System.out.println("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
                     break;
 
                 case 6:
