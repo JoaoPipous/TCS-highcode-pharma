@@ -17,21 +17,30 @@ public class Negocio {
     private LocalDateTime dataProgramada;
     private TipoNegocio tipo;
 
-    public Negocio(Status status, ArrayList<Funcionario> funcionariosEnvolvidos, ArrayList<ItemNegocio> itens, TipoNegocio tipo) {
+    // *** APENAS PARA TESTES, REMOVER DEPOIS ***
+    public Negocio(Status status, ArrayList<ItemNegocio> itens, TipoNegocio tipo) {
+        this.status = status;
+        this.produtos = itens;
+        this.tipo = tipo;
         this.valorNegocio = calcularValorTotal();
+    }
+
+    public Negocio(Status status, ArrayList<Funcionario> funcionariosEnvolvidos, ArrayList<ItemNegocio> itens, TipoNegocio tipo) {
         this.status = status;
         this.funcionariosEnvolvidos = funcionariosEnvolvidos;
         this.produtos = itens;
         this.tipo = tipo;
+        this.valorNegocio = calcularValorTotal();
     }
 
-    public Negocio(Status status, ArrayList<Funcionario> funcionariosEnvolvidos, ArrayList<ItemNegocio> itens, LocalDateTime dataProgramada, TipoNegocio tipo) {
-        this.valorNegocio = calcularValorTotal();
+    // LISTA DE FUNCIONARIOS REMOVIDA, ADICIONAR NOVAMENTE DEPOIS
+    public Negocio(Status status, ArrayList<ItemNegocio> itens, LocalDateTime dataProgramada, TipoNegocio tipo) {
         this.status = status;
-        this.funcionariosEnvolvidos = funcionariosEnvolvidos;
+        // this.funcionariosEnvolvidos = funcionariosEnvolvidos;
         this.produtos = itens;
         this.dataProgramada = dataProgramada;
         this.tipo = tipo;
+        this.valorNegocio = calcularValorTotal();
     }
 
     public String getDataNegocioFormatada() {
@@ -46,10 +55,6 @@ public class Negocio {
         return dataNegocio;
     }
 
-    public double getValorNegocio() {
-        return valorNegocio;
-    }
-
     public Status getStatus() {
         return status;
     }
@@ -58,7 +63,7 @@ public class Negocio {
         return funcionariosEnvolvidos;
     }
 
-    public ArrayList<ItemNegocio> getProduto() {
+    public ArrayList<ItemNegocio> getProdutos() {
         return produtos;
     }
 
@@ -80,11 +85,11 @@ public class Negocio {
         double soma = 0;
         if(tipo.equals(TipoNegocio.VENDA)) {
             for(ItemNegocio item : produtos) {
-                soma += item.getProduto().getValorVenda();
+                soma += item.getProduto().getValorVenda() * item.getQtd();
             }
         } else {
             for(ItemNegocio item : produtos) {
-                soma += item.getProduto().getValorCompra();
+                soma += item.getProduto().getValorCompra() * item.getQtd();
             }
         }
         return soma;

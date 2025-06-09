@@ -27,10 +27,18 @@ public class Produto {
     public String exibirInformacoes(){
         String categoriaString = this.categoria.toString();
 
-        return String.format("Nome do produto: %s\nValor de compra: R$%.2f\nValor de venda: R$%.2f" +
+        return String.format("\nNome do produto: %s\nValor de compra: R$%.2f\nValor de venda: R$%.2f" +
                 "\nQuantidade em estoque: %d\nCategoria: %s\n", nome, valorCompra, valorVenda, qtdEstoque, categoriaString);
     }
 
+    public void addEstoque(int quantidade) {
+        this.qtdEstoque += quantidade;
+    }
+
+    public void removeEstoque(int quantidade) {
+        this.qtdEstoque -= quantidade;
+    }
+      
     public Categoria definirCategoria(int categoria){
         switch (categoria) {
             case 1: return Categoria.MEDICAMENTO;
@@ -38,7 +46,6 @@ public class Produto {
             case 3: return Categoria.COSMETICO;
             case 4: return Categoria.ALIMENTICIO;
         }
-
         return null;
     }
 

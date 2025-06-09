@@ -1,8 +1,6 @@
 package model;
 
-import enumeracao.Categoria;
 import enumeracao.Status;
-import exception.ProdutoNaoEncontradoException;
 
 import java.time.Month;
 import java.time.Year;
@@ -14,16 +12,11 @@ public class Caixa {
     private double valorTotal;
     private ArrayList<Negocio> entradas;
     private ArrayList<Negocio> saidas;
-    private ArrayList<Produto> produtos;
-    private ArrayList<Produto> produtosIniciais;
 
     public Caixa(double valorTotal) {
         this.valorTotal = valorTotal;
         this.entradas = new ArrayList<Negocio>();
         this.saidas = new ArrayList<Negocio>();
-        this.produtosIniciais = new ArrayList<Produto>();
-        //criarProdutosIniciais();
-        this.produtos = produtosIniciais;
     }
 
     public double getValorTotal() {
@@ -37,39 +30,15 @@ public class Caixa {
     public ArrayList<Negocio> getSaidas() {
         return saidas;
     }
-
-    public ArrayList<Produto> getProdutos() {
-        return produtos;
-    }
-
-    public void adicionarProduto(Produto produto) {
-        produtos.add(produto);
-    }
-
-    public String removerProduto(Produto produto) throws ProdutoNaoEncontradoException {
-        for(Produto p : produtos) {
-            if(p.equals(produto)) {
-                produtos.remove(p);
-                return "Produto " + "*** produto.getNome() ***" + "removido com sucesso!";
-            }
-        }
-        throw new ProdutoNaoEncontradoException("Produto " + " *** produto.getNome() ***" + " não encontrado.");
-    }
-
+  
     public void registrarCompra(Negocio compra) {
         saidas.add(compra);
-
-        for(ItemNegocio item : compra.getProduto()){
-            item.getProduto().setQtdEstoque(item.getProduto().getQtdEstoque() + 1);
-        }
+        valorTotal -= compra.calcularValorTotal();
     }
 
     public void registrarVenda(Negocio venda) {
         saidas.add(venda);
-
-        for(ItemNegocio item : venda.getProduto()){
-            item.getProduto().setQtdEstoque(item.getProduto().getQtdEstoque() - 1);
-        }
+        valorTotal += venda.calcularValorTotal();
     }
 
     public ArrayList<String> exibirVendas() {
@@ -97,7 +66,6 @@ public class Caixa {
     }
 
     public String exibirNegociosAbertos() {
-
         StringBuilder sb = new StringBuilder();
 
         for(Negocio e : entradas) {
@@ -115,57 +83,64 @@ public class Caixa {
         return sb.toString();
     }
 
+    // Inicia 2 variáveis, saída (compra de produtos) e entrada (venda de produtos)
+    // Percorre a lista de saídas, se a saída atual estiver programada e
+    // for do mesmo mês passado por parâmetro, soma a saida o mesmo é feito para as entradas
+    // No final, retorna a diferença entre entradas e saídas = (lucro mensal)
     public double estimarLucroMensal(int mes) {
         double saida = 0, entrada = 0;
+        Month mesEscolhido = Month.of(mes);
 
         for(Negocio c : saidas) {
             // Verificar se a entrega está com status aberto
-            Month mesEscolhido = Month.of(mes);
-            Month mesProgramado = c.getDataProgramada().getMonth();
-            if(mesProgramado.equals(mesEscolhido)) {
-                saida += c.getValorNegocio();
+            if(c.getStatus() == Status.ABERTO && c.getDataProgramada() != null) {
+                // Verificar se a entrega está com status aberto
+                Month mesProgramado = c.getDataProgramada().getMonth();
+                if(mesProgramado.equals(mesEscolhido)) {
+                    saida += c.calcularValorTotal();
+                }
             }
         }
 
         for(Negocio v : entradas) {
-            // Verificar se a entrega está com status aberto
-            Month mesEscolhido = Month.of(mes);
-            Month mesProgramado = v.getDataProgramada().getMonth();
-            if(mesProgramado.equals(mesEscolhido)) {
-                entrada += v.getValorNegocio();
+            if(v.getStatus() == Status.ABERTO && v.getDataProgramada() != null) {
+                // Verificar se a entrega está com status aberto
+                Month mesProgramado = v.getDataProgramada().getMonth();
+                if(mesProgramado.equals(mesEscolhido)) {
+                    entrada += v.calcularValorTotal();
+                }
             }
         }
-
         return entrada - saida;
     }
 
+    // Inicia 2 variáveis, saída (compra de produtos) e entrada (venda de produtos)
+    // Percorre a lista de saídas, se a saída atual estiver programada e
+    // for do mesmo ano passado por parâmetro, soma a saida o mesmo é feito para as entradas
+    // No final, retorna a diferença entre entradas e saídas = (lucro anual)
     public double estimarLucroAnual(int ano) {
         double saida = 0, entrada = 0;
+        Year anoEscolhido = Year.of(ano);
 
         for(Negocio c : saidas) {
-            // Verificar se a entrega está com status aberto
-            Year anoEscolhido = Year.of(ano);
-            Year anoProgramado = Year.of(c.getDataProgramada().getYear());
-            if(anoProgramado.equals(anoEscolhido)) {
-                saida += c.getValorNegocio();
+            if(c.getStatus() == Status.ABERTO && c.getDataProgramada() != null) {
+                // Verificar se a entrega está com status aberto
+                Year anoProgramado = Year.of(c.getDataProgramada().getYear());
+                if(anoProgramado.equals(anoEscolhido)) {
+                    saida += c.calcularValorTotal();
+                }
             }
         }
 
         for(Negocio v : entradas) {
-            // Verificar se a entrega está com status aberto
-            Year anoEscolhido = Year.of(ano);
-            Year anoProgramado = Year.of(v.getDataProgramada().getYear());
-            if(anoProgramado.equals(anoEscolhido)) {
-                entrada += v.getValorNegocio();
+            if(v.getStatus().equals(Status.ABERTO) && v.getDataProgramada() != null) {
+                // Verificar se a entrega está com status aberto
+                Year anoProgramado = Year.of(v.getDataProgramada().getYear());
+                if(anoProgramado.equals(anoEscolhido)) {
+                    entrada += v.calcularValorTotal();
+                }
             }
         }
-
         return entrada - saida;
-    }
-
-    public void exibirProdutos() {
-        for(Produto p : produtos) {
-            System.out.println(p.exibirInformacoes());
-        }
     }
 }
