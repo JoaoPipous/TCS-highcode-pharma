@@ -8,6 +8,7 @@ import model.Produto;
 import setor.Almoxarifado;
 import setor.Setor;
 
+import java.security.spec.RSAOtherPrimeInfo;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.format.DateTimeFormatter;
@@ -133,6 +134,12 @@ public class Main {
 
                     // try {
                     Produto produto = new Produto(nomeProduto, valorCompra, valorVenda, qtdEstoque, categoria);
+                    for (Setor s : empresa.getSetores()) {
+                        if (s instanceof Almoxarifado) {
+                            ((Almoxarifado) s).adicionarProduto(produto);
+                            break;
+                        }
+                    }
                     Almoxarifado.adicionarProduto(produto);
                     System.out.println("Produto adicionado com sucesso!");
 //                    } catch (CategoriaInvalidaException e) {

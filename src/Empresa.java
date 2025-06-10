@@ -15,7 +15,7 @@ import java.util.List;
 
 public class Empresa {
     private Caixa caixa;
-    private final ArrayList<Setor> setores;
+    private ArrayList<Setor> setores;
     private Transportadora transportadoras;
     private List<Funcionario> funcionarios;
 
@@ -26,13 +26,19 @@ public class Empresa {
         setores = new ArrayList<>(List.of(new Almoxarifado(), new AtendimentoCliente(), new Financeiro(), new GerenteFilial(), new GestaoPessoas(), new Vendas()));
     }
 
+    public void addFuncionario(Funcionario funcionario, double salarioBrutoInicial) {
+        this.funcionarios.add(funcionario);
+        double bonusParaFuncionario = (caixa.getLucroMensal() * 0.05) / funcionarios.size();
+        new Salario(salarioBrutoInicial, funcionario, bonusParaFuncionario);
+    }
+
     public void addFuncionario(Funcionario funcionario) {
         this.funcionarios.add(funcionario);
     }
 
     public void validarCodigoUnicoFuncionario(String codigoFuncionario) throws CodigoUnicoExistenteException {
-        for(Funcionario funcionario: funcionarios) {
-            if(codigoFuncionario.equals(funcionario.getCodigoFuncionario())) {
+        for (Funcionario funcionario : funcionarios) {
+            if (codigoFuncionario.equals(funcionario.getCodigoFuncionario())) {
                 throw new CodigoUnicoExistenteException("Código único já existente. Insira outro código único.");
             }
         }
@@ -49,7 +55,7 @@ public class Empresa {
     }
 
     public Setor definirSetor(int setor) throws QuantidadeLimiteFuncionariosException, IllegalArgumentException {
-        for(Setor s : setores) {
+        for (Setor s : setores) {
             switch (setor) {
 
                 case 1: {
@@ -130,25 +136,19 @@ public class Empresa {
                     break;
                 }
 
-                default: throw new IllegalArgumentException("Entrada inválida. Setor indefinido.");
+                default:
+                    throw new IllegalArgumentException("Entrada inválida. Setor indefinido.");
 
             }
-        } return null;
+        }
+        return null;
     }
 
     public void registrarCompra(Negocio compra) {
         caixa.registrarCompra(compra);
-        for(ItemNegocio item : compra.getProdutos()) {
+        for (ItemNegocio item : compra.getProdutos()) {
             item.getProduto().addEstoque(item.getQtd());
         }
-    }
-
-    public Almoxarifado getAlmoxarifado() {
-        for(Setor s : setores) {
-            if(s instanceof Almoxarifado) {
-                return (Almoxarifado) s;
-            }
-        } return null;
     }
 
     public void registrarVenda(Negocio venda) throws EstoqueInsuficienteException {
@@ -176,12 +176,12 @@ public class Empresa {
             item.getProduto().removeEstoque(item.getQtd()); // Agora essa operação é segura
         }
     }
-  
+
     public String exibirSetores() {
         StringBuilder sb = new StringBuilder();
 
         int contador = 1;
-        for(Setor s : setores) {
+        for (Setor s : setores) {
             sb.append(contador + "- " + s.getNome() + "  ");
             contador++;
         }
@@ -200,12 +200,30 @@ public class Empresa {
         }
     }
 
+    public void distribuirBonusParticipacao() {
+        if (funcionarios.isEmpty()) {
+            System.out.println("Não há funcionários para distribuir bônus.");
+            return;
+        }
+        double lucroParcial = getCaixa().getLucroMensal() * 0.05; // 5% do lucro mensal
+        double bonusPorFuncionario = lucroParcial / funcionarios.size();
+
+        for (Funcionario f : funcionarios) {
+            f.atualizarSalario(bonusPorFuncionario);
+        }
+        System.out.println("Bônus de participação distribuído com sucesso para todos os funcionários.");
+    }
+
     public Caixa getCaixa() {
         return caixa;
     }
 
-    public Transportadora getTransportadoras() { return transportadoras; }
+    public Transportadora getTransportadoras() {
+        return transportadoras;
+    }
 
-    public ArrayList<Setor> getSetores() { return setores; }
+    public ArrayList<Setor> getSetores() {
+        return setores;
+    }
 
 }

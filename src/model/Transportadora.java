@@ -48,7 +48,8 @@ public class Transportadora {
         qtdParceiras = 3;
     }
 
-    public void calcularFrete(String transportadoraEscolhida, double toneladas) {
+    public void calcularFrete(String transportadoraEscolhida, double toneladas){
+
         Local local = Local.buscarcidadeTransportadora(transportadoraEscolhida);
 
         if (local != null) {
@@ -60,11 +61,13 @@ public class Transportadora {
         } else {
             System.out.println("Transportadora não encontrada nesta cidade");
         }
+
+
     }
 
     public void exibirTransportadora(){
         System.out.println("Possuimos: " + qtdParceiras + " Transportadoras" );
-        System.out.print("Cidades disponíveis: ");
+        System.out.println("Cidades disponiveis:");
         for(Local local: Local.values()){
             System.out.print(local.getCidadeTransportadora() + " ");
         }
