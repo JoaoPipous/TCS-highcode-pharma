@@ -2,6 +2,7 @@ package model;
 
 import enumeracao.Status;
 
+import java.time.LocalDate;
 import java.time.Month;
 import java.time.Year;
 import java.util.Random;
@@ -34,40 +35,32 @@ public class Caixa {
     public void registrarCompra(Negocio compra) {
         saidas.add(compra);
         valorTotal -= compra.calcularValorTotal();
-
-        for (ItemNegocio item : compra.getProdutos()) {
-            item.getProduto().addEstoque(item.getQtd());
-        }
     }
 
     public void registrarVenda(Negocio venda) {
         saidas.add(venda);
         valorTotal += venda.calcularValorTotal();
-
-        for (ItemNegocio item : venda.getProdutos()) {
-            item.getProduto().removeEstoque(item.getQtd());
-        }
     }
 
     public ArrayList<String> exibirVendas() {
-        ArrayList<String> vendasString = new ArrayList<String>();
+        ArrayList<String> vendasString = new ArrayList<>();
         if(entradas.isEmpty()) {
-
+            vendasString.add("Sem não possui vendas registradas.");
         } else {
             for(Negocio v : entradas) {
-                vendasString.add("Negócio feito em: " + v.getDataNegocioFormatada());
+                vendasString.add(v.exibirDados());
             }
         }
         return vendasString;
     }
 
     public ArrayList<String> exibirCompras() {
-        ArrayList<String> comprasString = new ArrayList<String>();
+        ArrayList<String> comprasString = new ArrayList<>();
         if(saidas.isEmpty()) {
-
+            comprasString.add("Sem não possui compras registradas.");
         } else {
             for(Negocio c : saidas) {
-                comprasString.add("Negócio feito em: " + c.getDataNegocioFormatada());
+                comprasString.add(c.exibirDados());
             }
         }
         return comprasString;
@@ -87,7 +80,6 @@ public class Caixa {
                 sb.append(s.exibirDados() + "\n");
             }
         }
-
         return sb.toString();
     }
 
