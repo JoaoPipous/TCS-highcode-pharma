@@ -15,7 +15,7 @@ import java.util.List;
 
 public class Empresa {
     private Caixa caixa;
-    private ArrayList<Setor> setores;
+    private final ArrayList<Setor> setores;
     private Transportadora transportadoras;
     private List<Funcionario> funcionarios;
 
@@ -141,6 +141,14 @@ public class Empresa {
         for(ItemNegocio item : compra.getProdutos()) {
             item.getProduto().addEstoque(item.getQtd());
         }
+    }
+
+    public Almoxarifado getAlmoxarifado() {
+        for(Setor s : setores) {
+            if(s instanceof Almoxarifado) {
+                return (Almoxarifado) s;
+            }
+        } return null;
     }
 
     public void registrarVenda(Negocio venda) throws EstoqueInsuficienteException {
