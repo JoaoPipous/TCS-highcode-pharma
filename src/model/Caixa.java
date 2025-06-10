@@ -34,32 +34,40 @@ public class Caixa {
     public void registrarCompra(Negocio compra) {
         saidas.add(compra);
         valorTotal -= compra.calcularValorTotal();
+
+        for (ItemNegocio item : compra.getProdutos()) {
+            item.getProduto().addEstoque(item.getQtd());
+        }
     }
 
     public void registrarVenda(Negocio venda) {
         saidas.add(venda);
         valorTotal += venda.calcularValorTotal();
+
+        for (ItemNegocio item : venda.getProdutos()) {
+            item.getProduto().removeEstoque(item.getQtd());
+        }
     }
 
     public ArrayList<String> exibirVendas() {
-        ArrayList<String> vendasString = new ArrayList<>();
+        ArrayList<String> vendasString = new ArrayList<String>();
         if(entradas.isEmpty()) {
-            vendasString.add("Sem não possui vendas registradas.");
+
         } else {
             for(Negocio v : entradas) {
-                vendasString.add(v.exibirDados());
+                vendasString.add("Negócio feito em: " + v.getDataNegocioFormatada());
             }
         }
         return vendasString;
     }
 
     public ArrayList<String> exibirCompras() {
-        ArrayList<String> comprasString = new ArrayList<>();
+        ArrayList<String> comprasString = new ArrayList<String>();
         if(saidas.isEmpty()) {
-            comprasString.add("Sem não possui compras registradas.");
+
         } else {
             for(Negocio c : saidas) {
-                comprasString.add(c.exibirDados());
+                comprasString.add("Negócio feito em: " + c.getDataNegocioFormatada());
             }
         }
         return comprasString;

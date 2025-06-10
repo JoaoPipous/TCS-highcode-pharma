@@ -46,6 +46,6 @@ public class Setor {
 
     public String exibirSetor() {
         return "\nNome do setor: " + nome + "\n" +
-                "Quantidade de funcionários:" + qtdFuncionarios + "\n";
+                "Quantidade de funcionários: " + qtdFuncionarios + "\n";
     }
 }

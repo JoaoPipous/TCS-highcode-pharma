@@ -10,8 +10,8 @@ public class Transportadora {
     private enum Local {
 
         LONDRINA("Londrina", 1000.0),
-        CAMBE("CAMBE", 2000.0),
-        ROLANDIA("Rolandia", 3000.0);
+        CAMBE("Cambé", 2000.0),
+        ROLANDIA("Rolândia", 3000.0);
 
         private String cidadeTransportadora;
         private double valorFreteFixo;
@@ -66,8 +66,8 @@ public class Transportadora {
     }
 
     public void exibirTransportadora(){
-        System.out.println("Possuimos: " + qtdParceiras + " Transportadoras" );
-        System.out.println("Cidades disponiveis:");
+        System.out.println("Possuímos: " + qtdParceiras + " transportadoras" );
+        System.out.print("Cidades disponíveis: ");
         for(Local local: Local.values()){
             System.out.print(local.getCidadeTransportadora() + " ");
         }

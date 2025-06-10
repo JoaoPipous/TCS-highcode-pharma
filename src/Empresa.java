@@ -1,4 +1,3 @@
-import exception.CategoriaInvalidaException;
 import exception.EstoqueInsuficienteException;
 import model.*;
 import exception.QuantidadeLimiteFuncionariosException;
@@ -15,7 +14,7 @@ import java.util.List;
 
 public class Empresa {
     private Caixa caixa;
-    private ArrayList<Setor> setores;
+    private final ArrayList<Setor> setores;
     private Transportadora transportadoras;
     private List<Funcionario> funcionarios;
 
@@ -38,10 +37,6 @@ public class Empresa {
         }
     }
 
-    public List<Funcionario> getFuncionarios() {
-        return funcionarios;
-    }
-
     public String exibirGeneros() {
         StringBuilder sb = new StringBuilder();
         sb.append("1- Masculino  2- Feminino\n");
@@ -49,6 +44,7 @@ public class Empresa {
     }
 
     public Setor definirSetor(int setor) throws QuantidadeLimiteFuncionariosException, IllegalArgumentException {
+
         for(Setor s : setores) {
             switch (setor) {
 
@@ -134,6 +130,7 @@ public class Empresa {
 
             }
         } return null;
+
     }
 
     public void registrarCompra(Negocio compra) {
@@ -190,6 +187,14 @@ public class Empresa {
                 System.out.println(funcionario);
             }
         }
+    }
+
+    public Almoxarifado getAlmoxarifado() {
+        for(Setor s : setores) {
+            if(s instanceof Almoxarifado) {
+                return (Almoxarifado) s;
+            }
+        } return null;
     }
 
     public Caixa getCaixa() {
