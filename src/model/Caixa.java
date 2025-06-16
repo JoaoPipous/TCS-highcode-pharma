@@ -31,7 +31,7 @@ public class Caixa {
     public ArrayList<Negocio> getSaidas() {
         return saidas;
     }
-  
+
     public void registrarCompra(Negocio compra) {
         saidas.add(compra);
         valorTotal -= compra.calcularValorTotal();
@@ -44,10 +44,10 @@ public class Caixa {
 
     public ArrayList<String> exibirVendas() {
         ArrayList<String> vendasString = new ArrayList<>();
-        if(entradas.isEmpty()) {
+        if (entradas.isEmpty()) {
             vendasString.add("Sem não possui vendas registradas.");
         } else {
-            for(Negocio v : entradas) {
+            for (Negocio v : entradas) {
                 vendasString.add(v.exibirDados());
             }
         }
@@ -56,10 +56,10 @@ public class Caixa {
 
     public ArrayList<String> exibirCompras() {
         ArrayList<String> comprasString = new ArrayList<>();
-        if(saidas.isEmpty()) {
+        if (saidas.isEmpty()) {
             comprasString.add("Sem não possui compras registradas.");
         } else {
-            for(Negocio c : saidas) {
+            for (Negocio c : saidas) {
                 comprasString.add(c.exibirDados());
             }
         }
@@ -69,17 +69,18 @@ public class Caixa {
     public String exibirNegociosAbertos() {
         StringBuilder sb = new StringBuilder();
 
-        for(Negocio e : entradas) {
-            if(e.getStatus() == Status.ABERTO) {
+        for (Negocio e : entradas) {
+            if (e.getStatus() == Status.ABERTO) {
                 sb.append(e.exibirDados() + "\n");
             }
         }
 
-        for(Negocio s : saidas) {
-            if(s.getStatus() == Status.ABERTO) {
+        for (Negocio s : saidas) {
+            if (s.getStatus() == Status.ABERTO) {
                 sb.append(s.exibirDados() + "\n");
             }
         }
+
         return sb.toString();
     }
 
@@ -91,22 +92,44 @@ public class Caixa {
         double saida = 0, entrada = 0;
         Month mesEscolhido = Month.of(mes);
 
-        for(Negocio c : saidas) {
+        for (Negocio c : saidas) {
             // Verificar se a entrega está com status aberto
-            if(c.getStatus() == Status.ABERTO && c.getDataProgramada() != null) {
+            if (c.getStatus() == Status.ABERTO && c.getDataProgramada() != null) {
                 // Verificar se a entrega está com status aberto
                 Month mesProgramado = c.getDataProgramada().getMonth();
-                if(mesProgramado.equals(mesEscolhido)) {
+                if (mesProgramado.equals(mesEscolhido)) {
                     saida += c.calcularValorTotal();
                 }
             }
         }
 
-        for(Negocio v : entradas) {
-            if(v.getStatus() == Status.ABERTO && v.getDataProgramada() != null) {
+        for (Negocio v : entradas) {
+            if (v.getStatus() == Status.ABERTO && v.getDataProgramada() != null) {
                 // Verificar se a entrega está com status aberto
                 Month mesProgramado = v.getDataProgramada().getMonth();
-                if(mesProgramado.equals(mesEscolhido)) {
+                if (mesProgramado.equals(mesEscolhido)) {
+                    entrada += v.calcularValorTotal();
+                }
+            }
+        }
+        return entrada - saida;
+    }
+
+    public double getLucroMensal() {
+        Month mesAtual = LocalDate.now().getMonth();
+        double entrada = 0, saida = 0;
+
+        for (Negocio c : saidas) {
+            if (c.getStatus() == Status.FINALIZADO && c.getDataProgramada() == null) {
+                if (c.getDataNegocio().getMonth().equals(mesAtual)) {
+                    saida += c.calcularValorTotal();
+                }
+            }
+        }
+
+        for (Negocio v : entradas) {
+            if (v.getStatus() == Status.FINALIZADO && v.getDataProgramada() == null) {
+                if (v.getDataNegocio().getMonth().equals(mesAtual)) {
                     entrada += v.calcularValorTotal();
                 }
             }
@@ -122,21 +145,21 @@ public class Caixa {
         double saida = 0, entrada = 0;
         Year anoEscolhido = Year.of(ano);
 
-        for(Negocio c : saidas) {
-            if(c.getStatus() == Status.ABERTO && c.getDataProgramada() != null) {
+        for (Negocio c : saidas) {
+            if (c.getStatus() == Status.ABERTO && c.getDataProgramada() != null) {
                 // Verificar se a entrega está com status aberto
                 Year anoProgramado = Year.of(c.getDataProgramada().getYear());
-                if(anoProgramado.equals(anoEscolhido)) {
+                if (anoProgramado.equals(anoEscolhido)) {
                     saida += c.calcularValorTotal();
                 }
             }
         }
 
-        for(Negocio v : entradas) {
-            if(v.getStatus().equals(Status.ABERTO) && v.getDataProgramada() != null) {
+        for (Negocio v : entradas) {
+            if (v.getStatus().equals(Status.ABERTO) && v.getDataProgramada() != null) {
                 // Verificar se a entrega está com status aberto
                 Year anoProgramado = Year.of(v.getDataProgramada().getYear());
-                if(anoProgramado.equals(anoEscolhido)) {
+                if (anoProgramado.equals(anoEscolhido)) {
                     entrada += v.calcularValorTotal();
                 }
             }

@@ -32,6 +32,8 @@ public class Funcionario {
         this.setor = setor;
 
         this.qtdVendas = 0;
+
+
     }
 
     public Genero definirGenero(int genero) {
@@ -94,6 +96,10 @@ public class Funcionario {
 
     public void incrementarVendas(){
         this.qtdVendas++;
+    }
+
+    public void atualizarSalario(double bonus){
+        this.salario += bonus;
     }
 
     @Override
