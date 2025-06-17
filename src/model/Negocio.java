@@ -47,6 +47,18 @@ public class Negocio {
     }
 
     public void setStatus(Status status) {
+
+    public Negocio(Status status, ArrayList<ItemNegocio> itens, ArrayList<Funcionario> funcionariosEnvolvidos, LocalDateTime dataProgramada, TipoNegocio tipo) {
+
+        this.status = status;
+    }
+
+    // --- ADIÇÕES: Getters, Setters e o método de resumo ---
+    public TipoNegocio getTipoNegocio() {
+        return tipo;
+    }
+
+    public void setStatus(Status status) {
         this.status = status;
     }
 
