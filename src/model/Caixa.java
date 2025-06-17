@@ -5,14 +5,17 @@ import enumeracao.Status;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.Year;
-import java.util.Random;
+// --- CORREÇÃO: Importação que faltava foi adicionada aqui ---
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 public class Caixa {
     static Random gerador = new Random();
     private double valorTotal;
-    private ArrayList<Negocio> entradas;
-    private ArrayList<Negocio> saidas;
+    private ArrayList<Negocio> entradas; // Vendas
+    private ArrayList<Negocio> saidas;   // Compras
 
     public Caixa(double valorTotal) {
         this.valorTotal = valorTotal;
@@ -22,6 +25,21 @@ public class Caixa {
 
     public double getValorTotal() {
         return valorTotal;
+    }
+
+    public void addValor(double valor) {
+        this.valorTotal += valor;
+    }
+
+    public void removerValor(double valor) {
+        this.valorTotal -= valor;
+    }
+
+    public List<Negocio> getNegocios() {
+        ArrayList<Negocio> todosOsNegocios = new ArrayList<>();
+        todosOsNegocios.addAll(entradas);
+        todosOsNegocios.addAll(saidas);
+        return todosOsNegocios;
     }
 
     public ArrayList<Negocio> getEntradas() {
@@ -34,18 +52,16 @@ public class Caixa {
 
     public void registrarCompra(Negocio compra) {
         saidas.add(compra);
-        valorTotal -= compra.calcularValorTotal();
     }
 
     public void registrarVenda(Negocio venda) {
-        saidas.add(venda);
-        valorTotal += venda.calcularValorTotal();
+        entradas.add(venda);
     }
 
     public ArrayList<String> exibirVendas() {
         ArrayList<String> vendasString = new ArrayList<>();
         if (entradas.isEmpty()) {
-            vendasString.add("Sem não possui vendas registradas.");
+            vendasString.add("A empresa não possui vendas registradas.");
         } else {
             for (Negocio v : entradas) {
                 vendasString.add(v.exibirDados());
@@ -57,7 +73,7 @@ public class Caixa {
     public ArrayList<String> exibirCompras() {
         ArrayList<String> comprasString = new ArrayList<>();
         if (saidas.isEmpty()) {
-            comprasString.add("Sem não possui compras registradas.");
+            comprasString.add("A empresa não possui compras registradas.");
         } else {
             for (Negocio c : saidas) {
                 comprasString.add(c.exibirDados());
@@ -68,36 +84,21 @@ public class Caixa {
 
     public String exibirNegociosAbertos() {
         StringBuilder sb = new StringBuilder();
-
-        for (Negocio e : entradas) {
-            if (e.getStatus() == Status.ABERTO) {
-                sb.append(e.exibirDados() + "\n");
+        for (Negocio n : getNegocios()) {
+            if (n.getStatus() == Status.ABERTO) {
+                sb.append(n.exibirDados()).append("\n");
             }
         }
-
-        for (Negocio s : saidas) {
-            if (s.getStatus() == Status.ABERTO) {
-                sb.append(s.exibirDados() + "\n");
-            }
-        }
-
         return sb.toString();
     }
 
-    // Inicia 2 variáveis, saída (compra de produtos) e entrada (venda de produtos)
-    // Percorre a lista de saídas, se a saída atual estiver programada e
-    // for do mesmo mês passado por parâmetro, soma a saida o mesmo é feito para as entradas
-    // No final, retorna a diferença entre entradas e saídas = (lucro mensal)
     public double estimarLucroMensal(int mes) {
         double saida = 0, entrada = 0;
         Month mesEscolhido = Month.of(mes);
 
         for (Negocio c : saidas) {
-            // Verificar se a entrega está com status aberto
             if (c.getStatus() == Status.ABERTO && c.getDataProgramada() != null) {
-                // Verificar se a entrega está com status aberto
-                Month mesProgramado = c.getDataProgramada().getMonth();
-                if (mesProgramado.equals(mesEscolhido)) {
+                if (c.getDataProgramada().getMonth() == mesEscolhido) {
                     saida += c.calcularValorTotal();
                 }
             }
@@ -105,9 +106,7 @@ public class Caixa {
 
         for (Negocio v : entradas) {
             if (v.getStatus() == Status.ABERTO && v.getDataProgramada() != null) {
-                // Verificar se a entrega está com status aberto
-                Month mesProgramado = v.getDataProgramada().getMonth();
-                if (mesProgramado.equals(mesEscolhido)) {
+                if (v.getDataProgramada().getMonth() == mesEscolhido) {
                     entrada += v.calcularValorTotal();
                 }
             }
@@ -120,16 +119,18 @@ public class Caixa {
         double entrada = 0, saida = 0;
 
         for (Negocio c : saidas) {
-            if (c.getStatus() == Status.FINALIZADO && c.getDataProgramada() == null) {
-                if (c.getDataNegocio().getMonth().equals(mesAtual)) {
+            if (c.getStatus() == Status.FINALIZADO) {
+                LocalDateTime dataFinal = c.getDataFinalizacao() != null ? c.getDataFinalizacao() : c.getDataNegocio();
+                if (dataFinal.getMonth() == mesAtual) {
                     saida += c.calcularValorTotal();
                 }
             }
         }
 
         for (Negocio v : entradas) {
-            if (v.getStatus() == Status.FINALIZADO && v.getDataProgramada() == null) {
-                if (v.getDataNegocio().getMonth().equals(mesAtual)) {
+            if (v.getStatus() == Status.FINALIZADO) {
+                LocalDateTime dataFinal = v.getDataFinalizacao() != null ? v.getDataFinalizacao() : v.getDataNegocio();
+                if (dataFinal.getMonth() == mesAtual) {
                     entrada += v.calcularValorTotal();
                 }
             }
@@ -137,19 +138,12 @@ public class Caixa {
         return entrada - saida;
     }
 
-    // Inicia 2 variáveis, saída (compra de produtos) e entrada (venda de produtos)
-    // Percorre a lista de saídas, se a saída atual estiver programada e
-    // for do mesmo ano passado por parâmetro, soma a saida o mesmo é feito para as entradas
-    // No final, retorna a diferença entre entradas e saídas = (lucro anual)
     public double estimarLucroAnual(int ano) {
         double saida = 0, entrada = 0;
-        Year anoEscolhido = Year.of(ano);
 
         for (Negocio c : saidas) {
             if (c.getStatus() == Status.ABERTO && c.getDataProgramada() != null) {
-                // Verificar se a entrega está com status aberto
-                Year anoProgramado = Year.of(c.getDataProgramada().getYear());
-                if (anoProgramado.equals(anoEscolhido)) {
+                if (c.getDataProgramada().getYear() == ano) {
                     saida += c.calcularValorTotal();
                 }
             }
@@ -157,9 +151,7 @@ public class Caixa {
 
         for (Negocio v : entradas) {
             if (v.getStatus().equals(Status.ABERTO) && v.getDataProgramada() != null) {
-                // Verificar se a entrega está com status aberto
-                Year anoProgramado = Year.of(v.getDataProgramada().getYear());
-                if (anoProgramado.equals(anoEscolhido)) {
+                if (v.getDataProgramada().getYear() == ano) {
                     entrada += v.calcularValorTotal();
                 }
             }
