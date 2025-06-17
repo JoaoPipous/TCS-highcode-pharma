@@ -1,3 +1,4 @@
+import enumeracao.Transportadora;
 import exception.*;
 import model.*;
 import setor.*;
@@ -18,7 +19,6 @@ public class Empresa {
 
     public Empresa() {
         this.caixa = new Caixa(200000);
-        this.transportadoras = new Transportadora();
         this.funcionarios = new ArrayList<Funcionario>();
         setores = new ArrayList<>(List.of(new Almoxarifado(), new AtendimentoCliente(), new Financeiro(), new GerenteFilial(), new GestaoPessoas(), new Vendas()));
     }

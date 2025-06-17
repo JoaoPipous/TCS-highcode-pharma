@@ -2,6 +2,7 @@ package model;
 
 import enumeracao.Status;
 import enumeracao.TipoNegocio;
+import enumeracao.Transportadora;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -19,22 +20,37 @@ public class Negocio {
     private LocalDateTime dataProgramada; // Usado para negócios ABERTOS com data futura
     private LocalDateTime dataFinalizacao; // --- ADIÇÃO: Data em que um negócio foi efetivamente finalizado ---
     private TipoNegocio tipo;
+    private Transportadora transportadora;
 
-    public Negocio(Status status, ArrayList<Funcionario> funcionariosEnvolvidos, ArrayList<ItemNegocio> itens, TipoNegocio tipo) {
+    public Negocio(Status status, ArrayList<Funcionario> funcionariosEnvolvidos, ArrayList<ItemNegocio> itens, TipoNegocio tipo, Transportadora transportadora) {
         this.status = status;
         this.funcionariosEnvolvidos = funcionariosEnvolvidos;
         this.produtos = itens;
         this.tipo = tipo;
         this.valorNegocio = calcularValorTotal();
+        this.transportadora = transportadora;
     }
 
-    public Negocio(Status status, ArrayList<ItemNegocio> itens, ArrayList<Funcionario> funcionariosEnvolvidos, LocalDateTime dataProgramada, TipoNegocio tipo) {
+    public Negocio(Status status, ArrayList<ItemNegocio> itens, ArrayList<Funcionario> funcionariosEnvolvidos, LocalDateTime dataProgramada, TipoNegocio tipo, Transportadora transportadora) {
         this.status = status;
         this.funcionariosEnvolvidos = funcionariosEnvolvidos;
         this.produtos = itens;
         this.dataProgramada = dataProgramada;
         this.tipo = tipo;
         this.valorNegocio = calcularValorTotal();
+        this.transportadora = transportadora;
+    }
+
+    // --- ADIÇÕES: Getters, Setters e o método de resumo ---
+    public TipoNegocio getTipoNegocio() {
+        return tipo;
+    }
+
+    public void setStatus(Status status) {
+
+    public Negocio(Status status, ArrayList<ItemNegocio> itens, ArrayList<Funcionario> funcionariosEnvolvidos, LocalDateTime dataProgramada, TipoNegocio tipo) {
+
+        this.status = status;
     }
 
     // --- ADIÇÕES: Getters, Setters e o método de resumo ---
@@ -57,6 +73,10 @@ public class Negocio {
     public double getValorTotal() {
         return valorNegocio;
     }
+
+    public Transportadora getTransportadora() { return transportadora; }
+
+    public void setTransportadora(Transportadora transportadora) { this.transportadora = transportadora; }
 
     public String exibirResumo() {
         String resumoProdutos = produtos.stream()

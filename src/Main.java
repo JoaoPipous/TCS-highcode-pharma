@@ -1,5 +1,6 @@
 import enumeracao.Status;
 import enumeracao.TipoNegocio;
+import enumeracao.Transportadora;
 import exception.*;
 import model.Funcionario;
 import model.ItemNegocio;
@@ -155,6 +156,24 @@ public class Main {
                     Status status = (statusOpcao == 1 ? Status.ABERTO : Status.FINALIZADO);
                     LocalDateTime dataHoraLida = null;
 
+                    System.out.println("\nQual a transportadora?");
+                    System.out.println("1 - Londrina");
+                    System.out.println("2 - Cambé");
+                    System.out.println("3 - Rolândia");
+
+                    int transportadora = lerInteiro(sc);
+                    Transportadora t = null;
+                    try {
+                        switch (transportadora) {
+                            case 1: t = Transportadora.LONDRINA; break;
+                            case 2: t = Transportadora.CAMBE; break;
+                            case 3: t = Transportadora.ROLANDIA; break;
+                            default: throw new IllegalArgumentException("Entrada inválida. Transportadora não definida.");
+                        }
+                    } catch(IllegalArgumentException e) {
+                        System.out.println(e.getMessage());
+                    }
+
                     if (status.equals(Status.ABERTO)) {
                         while (true) {
                             System.out.println("\nInsira a data de finalização da compra (formato: dd/MM/yyyy HH:mm:ss):");
@@ -236,9 +255,9 @@ public class Main {
 
                     Negocio negocio;
                     if (status.equals(Status.FINALIZADO)) {
-                        negocio = new Negocio(status, funcionariosEnvolvidosCompra, produtosCompra, TipoNegocio.COMPRA);
+                        negocio = new Negocio(status, funcionariosEnvolvidosCompra, produtosCompra, TipoNegocio.COMPRA, t);
                     } else {
-                        negocio = new Negocio(status, produtosCompra, funcionariosEnvolvidosCompra, dataHoraLida, TipoNegocio.COMPRA);
+                        negocio = new Negocio(status, produtosCompra, funcionariosEnvolvidosCompra, dataHoraLida, TipoNegocio.COMPRA, t);
                     }
 
                     empresa.registrarCompra(negocio);
@@ -257,6 +276,24 @@ public class Main {
                     int statusOpcao = lerInteiro(sc); // Usando método seguro
                     Status status = (statusOpcao == 1 ? Status.ABERTO : Status.FINALIZADO);
                     LocalDateTime dataHoraLida = null;
+
+                    System.out.println("\nQual a transportadora?");
+                    System.out.println("1 - Londrina");
+                    System.out.println("2 - Cambé");
+                    System.out.println("3 - Rolândia");
+
+                    int transportadora = lerInteiro(sc);
+                    Transportadora t = null;
+                    try {
+                        switch (transportadora) {
+                            case 1: t = Transportadora.LONDRINA; break;
+                            case 2: t = Transportadora.CAMBE; break;
+                            case 3: t = Transportadora.ROLANDIA; break;
+                            default: throw new IllegalArgumentException("Entrada inválida. Transportadora não definida.");
+                        }
+                    } catch(IllegalArgumentException e) {
+                        System.out.println(e.getMessage());
+                    }
 
                     if (status.equals(Status.ABERTO)) {
                         while (true) {
@@ -339,9 +376,9 @@ public class Main {
 
                     Negocio negocio;
                     if (status.equals(Status.FINALIZADO)) {
-                        negocio = new Negocio(status, funcionariosEnvolvidosVenda, produtosVenda, TipoNegocio.VENDA);
+                        negocio = new Negocio(status, funcionariosEnvolvidosVenda, produtosVenda, TipoNegocio.VENDA, t);
                     } else {
-                        negocio = new Negocio(status, produtosVenda, funcionariosEnvolvidosVenda, dataHoraLida, TipoNegocio.VENDA);
+                        negocio = new Negocio(status, produtosVenda, funcionariosEnvolvidosVenda, dataHoraLida, TipoNegocio.VENDA, t);
                     }
 
                     try {
@@ -378,7 +415,9 @@ public class Main {
 
                 case 8:
                     System.out.println("Transportadoras:\n");
-                    empresa.getTransportadoras().exibirTransportadora();
+                    for(Transportadora t : Transportadora.values()) {
+                        System.out.print(t.getCidadeTransportadora() + " ");
+                    }
                     break;
 
                 case 9:
