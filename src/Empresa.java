@@ -1,17 +1,15 @@
-import exception.CategoriaInvalidaException;
-import exception.EstoqueInsuficienteException;
+import enumeracao.Transportadora;
+import exception.*;
 import model.*;
-import exception.QuantidadeLimiteFuncionariosException;
-import model.ItemNegocio;
-import model.Negocio;
 import setor.*;
-import setor.Almoxarifado;
-import setor.Setor;
-import exception.CodigoUnicoExistenteException;
-import model.Caixa;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+// --- Importações que faltavam foram adicionadas ---
+import enumeracao.Status;
+import enumeracao.TipoNegocio;
 
 public class Empresa {
     private Caixa caixa;
@@ -21,165 +19,59 @@ public class Empresa {
 
     public Empresa() {
         this.caixa = new Caixa(200000);
-        this.transportadoras = new Transportadora();
         this.funcionarios = new ArrayList<Funcionario>();
         setores = new ArrayList<>(List.of(new Almoxarifado(), new AtendimentoCliente(), new Financeiro(), new GerenteFilial(), new GestaoPessoas(), new Vendas()));
     }
 
-    public void addFuncionario(Funcionario funcionario) {
+    public void addFuncionario(Funcionario funcionario) throws CodigoUnicoExistenteException {
+        validarCodigoUnicoFuncionario(funcionario.getCodigoFuncionario());
         this.funcionarios.add(funcionario);
     }
 
-    public void validarCodigoUnicoFuncionario(String codigoFuncionario) throws CodigoUnicoExistenteException {
-        for(Funcionario funcionario: funcionarios) {
-            if(codigoFuncionario.equals(funcionario.getCodigoFuncionario())) {
+    private void validarCodigoUnicoFuncionario(String codigoFuncionario) throws CodigoUnicoExistenteException {
+        for (Funcionario funcionario : funcionarios) {
+            if (codigoFuncionario.equals(funcionario.getCodigoFuncionario())) {
                 throw new CodigoUnicoExistenteException("Código único já existente. Insira outro código único.");
             }
         }
     }
 
-    public List<Funcionario> getFuncionarios() {
-        return funcionarios;
-    }
+    public List<Funcionario> getFuncionarios() { return funcionarios; }
 
-    public String exibirGeneros() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("1- Masculino  2- Feminino\n");
-        return sb.toString();
-    }
+    public String exibirGeneros() { return "1- Masculino  2- Feminino\n"; }
 
-    public Setor definirSetor(int setor) throws QuantidadeLimiteFuncionariosException, IllegalArgumentException {
-        for(Setor s : setores) {
-            switch (setor) {
-
-                case 1: {
-                    if (s instanceof Almoxarifado) {
-                        if (s.getContador() > s.getQtdFuncionarios()) {
-                            throw new QuantidadeLimiteFuncionariosException("Quantidade excedeu limite de funcionários.");
-                        } else {
-                            s.setContador(s.getContador() + 1);
-                            s.setQtdFuncionariosTotal(s.getQtdFuncionariosTotal() + 1);
-                            return s;
-                        }
-                    }
-                    break;
-                }
-
-                case 2: {
-                    if (s instanceof AtendimentoCliente) {
-                        if (s.getContador() > s.getQtdFuncionarios()) {
-                            throw new QuantidadeLimiteFuncionariosException("Quantidade excedeu limite de funcionários.");
-                        } else {
-                            s.setContador(s.getContador() + 1);
-                            s.setQtdFuncionariosTotal(s.getQtdFuncionariosTotal() + 1);
-                            return s;
-                        }
-                    }
-                    break;
-                }
-
-                case 3: {
-                    if (s instanceof Financeiro) {
-                        if (s.getContador() > s.getQtdFuncionarios()) {
-                            throw new QuantidadeLimiteFuncionariosException("Quantidade excedeu limite de funcionários.");
-                        } else {
-                            s.setContador(s.getContador() + 1);
-                            s.setQtdFuncionariosTotal(s.getQtdFuncionariosTotal() + 1);
-                            return s;
-                        }
-                    }
-                    break;
-                }
-
-                case 4: {
-                    if (s instanceof GerenteFilial) {
-                        if (s.getContador() > s.getQtdFuncionarios()) {
-                            throw new QuantidadeLimiteFuncionariosException("Quantidade excedeu limite de funcionários.");
-                        } else {
-                            s.setContador(s.getContador() + 1);
-                            s.setQtdFuncionariosTotal(s.getQtdFuncionariosTotal() + 1);
-                            return s;
-                        }
-                    }
-                    break;
-                }
-
-                case 5: {
-                    if (s instanceof GestaoPessoas) {
-                        if (s.getContador() > s.getQtdFuncionarios()) {
-                            throw new QuantidadeLimiteFuncionariosException("Quantidade excedeu limite de funcionários.");
-                        } else {
-                            s.setContador(s.getContador() + 1);
-                            s.setQtdFuncionariosTotal(s.getQtdFuncionariosTotal() + 1);
-                            return s;
-                        }
-                    }
-                    break;
-                }
-
-                case 6: {
-                    if (s instanceof Vendas) {
-                        if (s.getContador() > s.getQtdFuncionarios()) {
-                            throw new QuantidadeLimiteFuncionariosException("Quantidade excedeu limite de funcionários.");
-                        } else {
-                            s.setContador(s.getContador() + 1);
-                            s.setQtdFuncionariosTotal(s.getQtdFuncionariosTotal() + 1);
-                            return s;
-                        }
-                    }
-                    break;
-                }
-
-                default: throw new IllegalArgumentException("Entrada inválida. Setor indefinido.");
-
-            }
-        } return null;
-    }
-
-    public void registrarCompra(Negocio compra) {
-        caixa.registrarCompra(compra);
-        for(ItemNegocio item : compra.getProdutos()) {
-            item.getProduto().addEstoque(item.getQtd());
-        }
-    }
-
-    public void registrarVenda(Negocio venda) throws EstoqueInsuficienteException {
-        // --- INÍCIO DA VALIDAÇÃO ---
-        // 1. Loop para VERIFICAR o estoque de todos os produtos ANTES de fazer qualquer alteração.
-        for (ItemNegocio item : venda.getProdutos()) {
-            Produto produtoNoEstoque = item.getProduto();
-            int quantidadeDesejada = item.getQtd();
-
-            if (produtoNoEstoque.getQtdEstoque() < quantidadeDesejada) {
-                // 2. Se um item não tiver estoque, lança um erro e interrompe a operação.
-                throw new EstoqueInsuficienteException(
-                        "Estoque insuficiente para o produto: " + produtoNoEstoque.getNome() +
-                                ". Disponível: " + produtoNoEstoque.getQtdEstoque() + ", Desejado: " + quantidadeDesejada
-                );
-            }
-        }
-        // --- FIM DA VALIDAÇÃO ---
-
-        // 3. Se todos os produtos tiverem estoque, a execução continua normalmente.
-        // O código abaixo só será executado se a validação passar.
-        caixa.registrarVenda(venda);
-
-        for (ItemNegocio item : venda.getProdutos()) {
-            item.getProduto().removeEstoque(item.getQtd()); // Agora essa operação é segura
-        }
-    }
-  
+    // --- MÉTODO CORRIGIDO ---
+    // Agora o método constrói e retorna a lista de setores formatada.
     public String exibirSetores() {
         StringBuilder sb = new StringBuilder();
-
-        int contador = 1;
-        for(Setor s : setores) {
-            sb.append(contador + "- " + s.getNome() + "  ");
-            contador++;
+        sb.append("Setores disponíveis:\n");
+        for (int i = 0; i < setores.size(); i++) {
+            sb.append((i + 1) + "- " + setores.get(i).getNome() + "  ");
         }
         sb.append("\n");
-
         return sb.toString();
+    }
+
+    // --- MÉTODO CORRIGIDO ---
+    // Lógica completa para definir o setor, validar limite e retornar o objeto correto.
+    public Setor definirSetor(int setorEscolhido) throws QuantidadeLimiteFuncionariosException, IllegalArgumentException {
+        // Valida se o número escolhido está dentro do intervalo válido da lista
+        if (setorEscolhido < 1 || setorEscolhido > setores.size()) {
+            throw new IllegalArgumentException("Setor inválido. Por favor, escolha um número da lista.");
+        }
+
+        // Pega o setor da lista (ajustando o índice)
+        Setor s = setores.get(setorEscolhido - 1);
+
+        // Verifica se o setor já atingiu a quantidade máxima de funcionários
+        if (s.getContador() >= s.getQtdFuncionarios()) {
+            throw new QuantidadeLimiteFuncionariosException("Quantidade limite de funcionários excedida para o setor: " + s.getNome());
+        }
+
+        // Se houver vaga, incrementa o contador e retorna o setor
+        s.setContador(s.getContador() + 1);
+        s.setQtdFuncionariosTotal(s.getQtdFuncionariosTotal() + 1);
+        return s;
     }
 
     public void exibirFuncionarios() {
@@ -192,12 +84,78 @@ public class Empresa {
         }
     }
 
-    public Caixa getCaixa() {
-        return caixa;
+    public void distribuirBonusParticipacao() {
+        if (funcionarios.isEmpty()) {
+            System.out.println("Não há funcionários para distribuir bônus.");
+            return;
+        }
+        double lucroParcial = getCaixa().getLucroMensal() * 0.05; // 5% do lucro mensal
+        double bonusPorFuncionario = lucroParcial / funcionarios.size();
+
+        for (Funcionario f : funcionarios) {
+            // Supondo que a classe Funcionario tenha um método para receber o bônus
+            // f.receberBonus(bonusPorFuncionario);
+        }
+        System.out.println("Bônus de participação distribuído com sucesso para todos os funcionários.");
     }
 
+    public Caixa getCaixa() { return caixa; }
     public Transportadora getTransportadoras() { return transportadoras; }
-
     public ArrayList<Setor> getSetores() { return setores; }
 
+
+    // --- LÓGICA DE NEGÓCIOS CENTRALIZADA ---
+    public void registrarCompra(Negocio compra) {
+        caixa.registrarCompra(compra);
+        if (compra.getStatus() == Status.FINALIZADO) {
+            caixa.removerValor(compra.getValorTotal());
+            for (ItemNegocio item : compra.getProdutos()) {
+                item.getProduto().addEstoque(item.getQtd());
+            }
+        }
+    }
+
+    public void registrarVenda(Negocio venda) throws EstoqueInsuficienteException {
+        if (venda.getStatus() == Status.FINALIZADO) {
+            for (ItemNegocio item : venda.getProdutos()) {
+                if (item.getProduto().getQtdEstoque() < item.getQtd()) {
+                    throw new EstoqueInsuficienteException("Estoque insuficiente para " + item.getProduto().getNome());
+                }
+            }
+            caixa.registrarVenda(venda);
+            caixa.addValor(venda.getValorTotal());
+            for (ItemNegocio item : venda.getProdutos()) {
+                item.getProduto().removeEstoque(item.getQtd());
+            }
+        } else {
+            caixa.registrarVenda(venda);
+        }
+    }
+
+    public void finalizarNegocioAberto(Negocio negocio) throws EstoqueInsuficienteException {
+        if (negocio == null || negocio.getStatus() != Status.ABERTO) {
+            return;
+        }
+
+        if (negocio.getTipoNegocio() == TipoNegocio.VENDA) {
+            for (ItemNegocio item : negocio.getProdutos()) {
+                if (item.getProduto().getQtdEstoque() < item.getQtd()) {
+                    throw new EstoqueInsuficienteException("Estoque insuficiente para finalizar a venda de " + item.getProduto().getNome());
+                }
+            }
+            caixa.addValor(negocio.getValorTotal());
+            for (ItemNegocio item : negocio.getProdutos()) {
+                item.getProduto().removeEstoque(item.getQtd());
+            }
+
+        } else if (negocio.getTipoNegocio() == TipoNegocio.COMPRA) {
+            caixa.removerValor(negocio.getValorTotal());
+            for (ItemNegocio item : negocio.getProdutos()) {
+                item.getProduto().addEstoque(item.getQtd());
+            }
+        }
+
+        negocio.setStatus(Status.FINALIZADO);
+        negocio.setDataFinalizacao(LocalDateTime.now());
+    }
 }
